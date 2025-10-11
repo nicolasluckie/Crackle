@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        # Avoid stripping spaces from ASCII art in crackle.py
+        exclude: ^crackle\.py$
+      - id: mixed-line-ending
+        args: ["--fix=auto"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.5
+    hooks:
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+        always_run: true
+      - id: ruff-format
+        always_run: true
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
+    hooks:
+      - id: mypy
+        additional_dependencies: []
+        # Run regardless of file matching and let mypy read config
+        always_run: true
+        pass_filenames: false
+        args: ["--config-file=mypy.ini", "crackle.py", "tests"]
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        pass_filenames: false
+        always_run: true
