@@ -24,6 +24,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+          # No requirements.txt/pyproject.toml in this repo; use pre-commit config as cache key
+          cache-dependency-path: .pre-commit-config.yaml
 
       - name: Install dependencies
         run: |
