@@ -1,9 +1,5 @@
 # crackle
 
-<a href="https://github.com/nicolasluckie/crackle/actions/workflows/ci.yml">
-	<img src="https://img.shields.io/github/actions/workflow/status/nicolasluckie/crackle/ci.yml?branch=main&label=Tests&logo=githubactions&logoColor=white" alt="CI Tests Status" />
-</a>
-
 Practice with a random word and unlimited guesses! 🟩🟨⬛
 
 ```
@@ -15,6 +11,10 @@ or crack the daily Wordle 😉
 ```
 python crackle.py
 ```
+
+<a href="https://github.com/nicolasluckie/crackle/actions/workflows/ci.yml">
+	<img src="https://img.shields.io/github/actions/workflow/status/nicolasluckie/crackle/ci.yml?branch=main&label=Tests&logo=githubactions&logoColor=white" alt="CI Tests Status" />
+</a>
 
 ## How It Works
 
