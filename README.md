@@ -37,6 +37,10 @@ Next-word suggestions are ranked by positional and global letter frequency and u
 
 ## Usage
 
+### Frontend
+
+*Coming soon* 🏗️
+
 ### Interactive (Default)
 
 Interactive helper (enter guesses and g/y/b results):
