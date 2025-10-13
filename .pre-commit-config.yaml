@@ -40,14 +40,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: git-chglog-pre-push
-        name: git-chglog (update CHANGELOG before push)
-        entry: git-chglog -o CHANGELOG.md
-        language: system
-        stages: [pre-push]
-        pass_filenames: false
-        always_run: true
-
       - id: pytest
         name: pytest
         entry: pytest
