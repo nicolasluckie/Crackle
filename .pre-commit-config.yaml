@@ -42,10 +42,7 @@ repos:
     hooks:
       - id: git-chglog-pre-push
         name: git-chglog (update CHANGELOG before push)
-        # Super long command to handle cross-platform (Windows/Linux/Mac) execution
-        # and to ensure it works with both python3 and python (depending on system)
-        entry: >
-          sh -c "(command -v python3 >/dev/null 2>&1 && python3 -c 'import os,subprocess,sys; sys.exit(subprocess.call([\"cmd\",\"/c\",\"git-chglog -o CHANGELOG.md && git add CHANGELOG.md\"]) if os.name==\"nt\" else subprocess.call([\"sh\",\"-c\",\"git-chglog -o CHANGELOG.md && git add CHANGELOG.md\"]))') || python -c 'import os,subprocess,sys; sys.exit(subprocess.call([\"cmd\",\"/c\",\"git-chglog -o CHANGELOG.md && git add CHANGELOG.md\"]) if os.name==\"nt\" else subprocess.call([\"sh\",\"-c\",\"git-chglog -o CHANGELOG.md && git add CHANGELOG.md\"]))' )"
+        entry: git-chglog -o CHANGELOG.md
         language: system
         stages: [pre-push]
         pass_filenames: false
