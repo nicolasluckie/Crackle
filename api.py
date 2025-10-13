@@ -1,11 +1,12 @@
 """Flask API backend for Crackle web interface."""
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import random
+import os
 from crackle import load_words, filter_words, rank_words, compute_feedback
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="web/dist", static_url_path="")
 CORS(app)  # Enable CORS for React frontend
 
 # Load word list once at startup
@@ -118,6 +119,16 @@ def make_guess():
 def health():
     """Health check endpoint."""
     return jsonify({"status": "ok", "words_loaded": len(WORD_LIST)})
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_frontend(path):
+    """Serve the React frontend in production mode."""
+    if path and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, "index.html")
 
 
 if __name__ == "__main__":

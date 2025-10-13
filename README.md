@@ -28,12 +28,12 @@ Practice or Crack the daily Wordle 💥
 
 ## Roadmap
 
-- [ ] 🐳 Production build & deployment using Docker
+- [x] 🐳 Production build & deployment using Docker
 - [x] 🧪 Frontend unit tests
 - [x] 🎨 Shades of Purple theme with animations
 - [x] ⚛️ React + TypeScript web UI with Vite
-- [x] 🧪 Backend unit tests
-- [x] 🚀 Initial CLI release with core features
+- [x] 🧪 Backend unit tests using unittest + pytest
+- [x] 🚀 Initial Python script with core functionality
 
 ## How It Works
 
@@ -53,11 +53,18 @@ Next-word suggestions are ranked by positional and global letter frequency and u
 
 ### Prerequisites
 
+**Development:**
 - Node.js 18+ and npm
 - Python 3.7+
 - Flask and flask-cors (`pip install flask flask-cors`)
 
+**Production (Docker):**
+- Docker (v20.10+)
+- Docker Compose (v2.0+)
+
 ### Installation
+
+#### Development Setup
 
 1. Install frontend dependencies:
 ```bash
@@ -70,11 +77,29 @@ npm install
 pip install flask flask-cors
 ```
 
+#### Production Setup (Docker)
+
+1. Navigate to the docker directory:
+```bash
+cd docker
+```
+
+2. Build and start the application:
+```bash
+docker-compose up -d
+```
+
+3. Access the application at `http://localhost:5000`
+
+See [`docker/README.md`](./docker/README.md) for detailed Docker deployment instructions.
+
 ### Running the Application
+
+#### Development Mode
 
 You need to run both the Flask API backend and the React frontend.
 
-#### Quick Start (Single Command)
+**Quick Start (Single Command)**
 
 From the `web` directory:
 
@@ -87,7 +112,7 @@ This will start both the Flask API backend and React frontend concurrently.
 - **API**: `http://localhost:5000`
 - **Web Interface**: `http://localhost:5173`
 
-#### Manual Start (Separate Terminals)
+**Manual Start (Separate Terminals)**
 
 Alternatively, you can run them separately:
 
