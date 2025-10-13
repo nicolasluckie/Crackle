@@ -37,3 +37,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: vitest
+        name: vitest (web tests)
+        entry: npm test --prefix web
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -1,20 +1,39 @@
-# crackle
-
-Practice with a random word and unlimited guesses! 🟩🟨⬛
-
-```
-python crackle.py --play
-```
-
-or crack the daily Wordle 😉
-
-```
-python crackle.py
-```
+# Crackle
 
 <a href="https://github.com/nicolasluckie/crackle/actions/workflows/ci.yml">
 	<img src="https://img.shields.io/github/actions/workflow/status/nicolasluckie/crackle/ci.yml?branch=main&label=Tests&logo=githubactions&logoColor=white" alt="CI Tests Status" />
 </a>
+
+Practice or Crack the daily Wordle 💥
+
+![Crackle Main Menu](./screenshots/Main-Menu.gif)
+
+## Features
+
+- **Practice Mode**: Play unlimited Wordle games with emoji feedback (🟩🟨⬛)
+- **Crack Wordle Mode**: Get intelligent suggestions to solve the daily Wordle puzzle
+- **Physical + On-screen Keyboards**: Type with your keyboard or click the on-screen buttons
+- **Smart Context Switching**: Automatically switches between guess and result input
+- **Smooth Scrolling**: Auto-scrolls to relevant sections (suggestions ↔ submit ↔ stats)
+- **Dark Theme**: Beautiful "Shades of Purple" theme with animated backgrounds
+- **Word List Caching**: Caches word list locally for faster subsequent loads (7-day expiration)
+- **Loading States**: Visual feedback with animated spinners and loading messages
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Real-time Filtering**: Instantly filters and ranks word suggestions
+- **CLI Mode**: Original command-line interface still available
+
+![Crackle Crack Wordle Mode](./screenshots/Crack-Wordle.png)
+
+![Crackle Practice Mode](./screenshots/Practice-Mode.png)
+
+## Roadmap
+
+- [ ] 🐳 Production build & deployment using Docker
+- [x] 🧪 Frontend unit tests
+- [x] 🎨 Shades of Purple theme with animations
+- [x] ⚛️ React + TypeScript web UI with Vite
+- [x] 🧪 Backend unit tests
+- [x] 🚀 Initial CLI release with core features
 
 ## How It Works
 
@@ -30,56 +49,145 @@ There is no limit to the number of guesses you can enter.
 
 Next-word suggestions are ranked by positional and global letter frequency and unique-letter coverage, with a light duplicate-letter penalty and a small vowel bonus when many candidates remain.
 
-## Prerequisites
-- Python 3.7+  (no external dependencies)
-- Word list: `wordle_answers.txt` must be present in the same directory.
-- Suggestions shown in helper modes are ranked using positional and global letter frequencies, favoring unique-letter coverage with a light duplicate-letter penalty and a small vowel bonus when many candidates remain.
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Python 3.7+
+- Flask and flask-cors (`pip install flask flask-cors`)
+
+### Installation
+
+1. Install frontend dependencies:
+```bash
+cd web
+npm install
+```
+
+2. Install backend dependencies (from the root directory):
+```bash
+pip install flask flask-cors
+```
+
+### Running the Application
+
+You need to run both the Flask API backend and the React frontend.
+
+#### Quick Start (Single Command)
+
+From the `web` directory:
+
+```bash
+npm start
+```
+
+This will start both the Flask API backend and React frontend concurrently.
+
+- **API**: `http://localhost:5000`
+- **Web Interface**: `http://localhost:5173`
+
+#### Manual Start (Separate Terminals)
+
+Alternatively, you can run them separately:
+
+**Terminal 1: Start the Flask API**
+
+From the root directory:
+
+```bash
+python api.py
+```
+
+The API will start on `http://localhost:5000`
+
+**Terminal 2: Start the React Frontend**
+
+From the `web` directory:
+
+```bash
+npm run dev
+```
+
+The web interface will start on `http://localhost:5173`
+
+The web interface will start on `http://localhost:5173`
+
+Open your browser and navigate to `http://localhost:5173` to use the application.
 
 ## Usage
 
-### Frontend
+### Practice Mode (Web UI)
 
-*Coming soon* 🏗️
+1. Select "Practice Mode" from the main menu
+2. Type your guess using the on-screen keyboard or your physical keyboard
+3. Press Enter to submit
+4. Get instant emoji feedback: 🟩 (correct position), 🟨 (wrong position), ⬛ (not in word)
+5. Keep guessing until you find the word!
+6. Click "New Game" to play again
 
-### Interactive (Default)
+### Practice Mode (CLI)
 
-Interactive helper (enter guesses and g/y/b results):
-
-```
-python crackle.py
-```
-
-### Play
-
-Play mode (emoji feedback: 🟩 🟨 ⬛, unlimited guesses):
-
+1. Run the play mode:
 ```
 python crackle.py --play
 ```
+2. Type your guess and press Enter
+3. See emoji feedback: 🟩🟨⬛
+4. Keep guessing until you find the word!
 
-### CLI (filter-only)
+### Crack Wordle Mode (Web UI)
 
-Filter candidates from a guess + feedback:
+1. Select "Crack Wordle" from the main menu
+2. Type your guess from the actual Wordle game
+3. Type the result using G (green), Y (yellow), B (black) and press Enter
+4. See the filtered words and top suggestions
+5. Click on a suggestion to use it as your next guess
+6. Repeat until you solve the puzzle!
 
+### Crack Wordle Mode (CLI)
+
+1. Run the crack mode:
 ```
-python crackle.py --guess slate --result bgybb
+python crackle.py --crack
+```
+2. Type your guess from the actual Wordle game
+3. Type the result using G (green), Y (yellow), B (black) and press Enter
+4. See the filtered words and top suggestions
+5. Click on a suggestion to use it as your next guess
+
+## Building for Production
+
+```bash
+npm run build
 ```
 
-### Success messages:
+The built files will be in the `dist` directory.
 
-Play mode:
+## Technology Stack
 
-`🎯 Cracked it in N guesses! The word is: WORD`
+### Frontend
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite 7
+- **UI Library**: Radix UI Themes 3
+- **HTTP Client**: Axios 1.12
+- **Styling**: CSS with HSL color system
+- **Testing**: Vitest 3, React Testing Library
 
-Interactive helper:
+### Backend
+- **Language**: Python 3.9+
+- **Framework**: Flask
+- **CORS**: flask-cors
 
-`🎯 Cracked it in N guesses! The word is: WORD`
-
-CLI (filter-only):
-
-`🎉 You've cracked it with Crackle!`
+### Development Tools
+- **Linting**: Ruff (Python), ESLint (TypeScript)
+- **Type Checking**: mypy (Python), TypeScript
+- **Testing**: pytest (Python), Vitest (Web)
+- **Pre-commit Hooks**: Automated linting, formatting, and testing
 
 ## Testing
+
+### Python CLI Tests
 
 - Run everything (lint, type-checks, tests):
 
@@ -93,52 +201,82 @@ pre-commit run --all-files
 pytest
 ```
 
-## Examples
+### Web Interface Tests
 
-### Interactive Mode (Default)
+The web interface includes comprehensive unit tests with Vitest and React Testing Library.
 
-```
-$ python crackle.py
-Enter your guess (or 'q' to quit): slate
-Enter result (g=green, y=yellow, b=black): bybby
-🧠 Words remaining: 283
-📝 Suggestions: RILED, OILED, MOLED, POLED, COLED, DOLEY, HOLED, LOLED, VOLED, PILED
-
-Enter your guess (or 'q' to quit): riled
-Enter result (g=green, y=yellow, b=black): ybygb
-🧠 Words remaining: 21
-📝 Suggestions: LOPER, LOVER, LONER, LOWER, LUGER, MOREL, BOREL, FOREL, LUXER, LUREX
-
-Enter your guess (or 'q' to quit): loper
-Enter result (g=green, y=yellow, b=black): gbbgg
-🧠 Words remaining: 5
-📝 Suggestions: LUGER, LUXER, LURER, LEGER, LEVER
-
-Enter your guess (or 'q' to quit): leger
-Enter result (g=green, y=yellow, b=black): ggbgg
-🧠 Words remaining: 1
-📝 Suggestions: LEVER
-🎯 Cracked it in 4 guesses! The word is: LEVER
+**Run Tests:**
+```bash
+cd web
+npm test                # Run tests once
+npm run test:watch      # Run tests in watch mode
+npm run test:coverage   # Generate coverage report
 ```
 
-### Play mode
+**Test Structure:**
+
+Tests are located in `web/src/test/` and include 37 tests covering:
+- **MainMenu.test.tsx** (8 tests): Main menu navigation, word list caching, loading states, error handling
+- **CrackMode.test.tsx** (17 tests): Crack Mode functionality, physical keyboard input, on-screen keyboard, guess/result validation, API integration, success/error states, suggestion clicking
+- **wordListCache.test.ts** (12 tests): LocalStorage caching utility, cache expiration (7 days), version validation, error handling
+
+**Coverage Goals:**
+- Statements: > 80%
+- Branches: > 75%
+- Functions: > 80%
+- Lines: > 80%
+
+Additional testing examples, best practices, and debugging tips are available in [`web/src/test/README.md`](./web/src/test/README.md)
+
+## Project Structure
 
 ```
-$ python crackle.py --play
-🎮 Play Mode: Guess the 5-letter word! Type 'q' to quit.
-Enter your guess: slate
-⬛🟨⬛⬛🟨  (SLATE)
-Enter your guess: crane
-🟨🟩⬛⬛⬛  (CRANE)
-Enter your guess: crone
-🟩🟩🟩🟩🟩  (CRONE)
-🎯 Cracked it in 3 guesses! The word is: CRONE
+crackle/
+├── crackle.py                   # Python CLI implementation
+├── api.py                       # Flask API backend
+├── wordle_answers.txt           # 14,855 valid 5-letter words
+├── tests/                       # Python tests
+│   └── test_crackle.py
+├── web/                         # React web interface
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── MainMenu.tsx         # Main menu with mode selection
+│   │   │   ├── MainMenu.css
+│   │   │   ├── PracticeMode.tsx     # Practice mode game
+│   │   │   ├── PracticeMode.css
+│   │   │   ├── CrackMode.tsx        # Crack Wordle helper
+│   │   │   ├── CrackMode.css
+│   │   │   └── ReactBits/           # Animated components
+│   │   │       ├── LetterGlitch.tsx # Animated background
+│   │   │       ├── DecryptedText.tsx
+│   │   │       └── ClickSpark.tsx
+│   │   ├── utils/
+│   │   │   └── wordListCache.ts     # LocalStorage caching utility
+│   │   ├── test/                    # Unit tests (Vitest)
+│   │   │   ├── setup.ts
+│   │   │   ├── MainMenu.test.tsx
+│   │   │   ├── CrackMode.test.tsx
+│   │   │   └── wordListCache.test.ts
+│   │   ├── App.tsx                  # Main app component
+│   │   └── main.tsx                 # Entry point
+│   ├── public/
+│   ├── package.json
+│   ├── vite.config.ts               # Vite configuration
+│   └── vitest.config.ts             # Test configuration
+├── .pre-commit-config.yaml          # Pre-commit hooks
+└── .github/workflows/ci.yml         # GitHub Actions CI
 ```
 
-### CLI (filter-only)
+## API Endpoints
 
-```
-$ python crackle.py --guess slate --result bgybb
-🧠 Words remaining: 123
-📝 Suggestions: CRANE, TRACE, GRACE, ...
-```
+The Flask backend (`api.py`) provides:
+
+- `GET /api/health` - Health check
+- `GET /api/words` - Get the full word list
+- `POST /api/filter` - Filter words based on guess and result
+- `POST /api/play/new` - Start a new practice game
+- `POST /api/play/guess` - Submit a guess in practice mode
+
+## License
+
+Crackle is open-sourced software licensed under the [MIT license](./LICENSE).

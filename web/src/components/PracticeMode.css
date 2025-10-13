@@ -1,0 +1,307 @@
+.practice-mode {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: hsl(243, 33%, 25%);
+  color: hsl(0, 0%, 90%);
+}
+
+.game-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.game-header > :first-child {
+  justify-self: start;
+}
+
+.game-header > :nth-child(2) {
+  justify-self: center;
+}
+
+.game-header > :last-child {
+  justify-self: end;
+}
+
+.back-button {
+  cursor: pointer;
+}
+
+.error-message {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: hsl(243, 33%, 30%);
+  border: 1px solid hsl(243, 33%, 35%);
+  border-left: 4px solid hsl(12, 77%, 52%);
+  color: hsl(0, 0%, 90%);
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.guess-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.letter-box {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid hsl(243, 33%, 40%);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background-color: hsl(243, 33%, 30%);
+  color: hsl(0, 0%, 90%);
+}
+
+.letter-box.empty {
+  border-color: hsl(243, 33%, 40%);
+  background-color: hsl(243, 33%, 30%);
+}
+
+.letter-box.filled {
+  border-color: hsl(50, 100%, 49%);
+  background-color: hsl(243, 33%, 35%);
+  animation: pop 0.1s;
+}
+
+.letter-box.correct {
+  background-color: hsl(98, 82%, 71%);
+  border-color: hsl(98, 82%, 71%);
+  color: hsl(243, 33%, 25%);
+}
+
+.letter-box.present {
+  background-color: hsl(50, 100%, 49%);
+  border-color: hsl(50, 100%, 49%);
+  color: hsl(243, 33%, 25%);
+}
+
+.letter-box.absent {
+  background-color: hsl(243, 33%, 40%);
+  border-color: hsl(243, 33%, 40%);
+  color: hsl(0, 0%, 60%);
+}
+
+.letter-box.revealing {
+  animation: flip 0.3s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+    border-color: hsl(50, 100%, 49%);
+    background-color: hsl(243, 33%, 30%);
+  }
+  49% {
+    transform: rotateX(90deg);
+    border-color: hsl(50, 100%, 49%);
+    background-color: hsl(243, 33%, 30%);
+  }
+  50% {
+    transform: rotateX(90deg);
+  }
+  51% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+/* Apply colors after flip animation completes */
+.letter-box.revealing[data-color="correct"] {
+  animation: flip 0.3s ease-in-out, applyCorrect 0.01s 0.3s forwards;
+}
+
+.letter-box.revealing[data-color="present"] {
+  animation: flip 0.3s ease-in-out, applyPresent 0.01s 0.3s forwards;
+}
+
+.letter-box.revealing[data-color="absent"] {
+  animation: flip 0.3s ease-in-out, applyAbsent 0.01s 0.3s forwards;
+}
+
+@keyframes applyCorrect {
+  to {
+    background-color: hsl(98, 82%, 71%);
+    border-color: hsl(98, 82%, 71%);
+    color: hsl(243, 33%, 25%);
+  }
+}
+
+@keyframes applyPresent {
+  to {
+    background-color: hsl(50, 100%, 49%);
+    border-color: hsl(50, 100%, 49%);
+    color: hsl(243, 33%, 25%);
+  }
+}
+
+@keyframes applyAbsent {
+  to {
+    background-color: hsl(243, 33%, 40%);
+    border-color: hsl(243, 33%, 40%);
+    color: hsl(0, 0%, 60%);
+  }
+}
+
+.win-message {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  text-align: center;
+  background-color: hsl(243, 33%, 30%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.loading-card {
+  margin: 2rem auto;
+  padding: 2rem;
+  text-align: center;
+  background-color: hsl(243, 33%, 30%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.spinner {
+  border: 4px solid hsl(243, 33%, 40%);
+  border-top: 4px solid hsl(50, 100%, 49%);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem 1.5rem;
+  margin: 0 auto;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.key {
+  min-width: 40px;
+  height: 58px;
+  padding: 0 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+  white-space: nowrap;
+}
+
+.key:hover:not(:disabled) {
+  background-color: hsl(243, 33%, 40%);
+}
+
+.key:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Key states based on letter feedback */
+.key-green {
+  background-color: hsl(98, 82%, 71%);
+  color: hsl(243, 33%, 25%);
+}
+
+.key-yellow {
+  background-color: hsl(50, 100%, 49%);
+  color: hsl(243, 33%, 25%);
+}
+
+.key-black {
+  background-color: hsl(243, 33%, 40%);
+  color: hsl(0, 0%, 60%);
+}
+
+.key-wide {
+  min-width: 65px;
+  font-size: 0.75rem;
+}
+
+.submit-button {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: hsl(50, 100%, 49%) !important;
+  color: hsl(243, 33%, 25%) !important;
+}
+
+.submit-button:hover {
+  background-color: hsl(50, 100%, 55%) !important;
+}
+
+@media (max-width: 600px) {
+  .letter-box {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .key {
+    min-width: 32px;
+    height: 48px;
+    font-size: 0.75rem;
+  }
+
+  .key-wide {
+    min-width: 55px;
+  }
+}

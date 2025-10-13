@@ -1,0 +1,480 @@
+.crack-mode {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: hsl(243, 33%, 25%);
+  color: hsl(0, 0%, 90%);
+}
+
+/* Override Radix UI Card default styles */
+.crack-mode :where(.rt-Card) {
+  background-color: hsl(243, 33%, 30%) !important;
+  border: 1px solid hsl(243, 33%, 35%) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Ensure card background is unset to allow custom background color */
+.rt-Card:where(.rt-variant-surface) {
+  background-color: hsl(243, 33%, 30%) !important;
+  border: 1px solid hsl(243, 33%, 35%) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+  --card-background-color: unset !important;
+  color: hsl(0, 0%, 90%);
+}
+
+.rt-Text {
+  color: hsl(0, 0%, 90%);
+}
+
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.loading-card {
+  padding: 3rem;
+  text-align: center;
+  background-color: hsl(243, 33%, 30%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(243, 33%, 35%);
+}
+
+.loading-text {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: hsl(50, 100%, 49%);
+  min-height: 1.5rem;
+  display: block;
+}
+
+.spinner {
+  border: 4px solid hsl(243, 33%, 40%);
+  border-top: 4px solid hsl(50, 100%, 49%);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.game-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.game-header > :first-child {
+  justify-self: start;
+}
+
+.game-header > :nth-child(2) {
+  justify-self: center;
+}
+
+.game-header > :last-child {
+  justify-self: end;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.results-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stats-card {
+  padding: 1rem;
+  background-color: hsl(243, 33%, 30%);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.error-message,
+.success-message {
+  padding: 1rem;
+  background-color: hsl(243, 33%, 30%);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.error-message {
+  border-left: 4px solid hsl(12, 77%, 52%);
+}
+
+.error-callout {
+  color: hsl(12, 77%, 52%);
+  background-color: hsl(0deg 100% 50% / 15%) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.success-message {
+  border-left: 4px solid hsl(98, 82%, 71%);
+}
+
+.success-msg {
+    color: hsl(98, 82%, 71%);
+}
+
+.win-message {
+  padding: 2rem;
+  text-align: center;
+  background-color: hsl(243, 33%, 30%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.suggestions-card {
+  padding: 1.5rem;
+  background-color: hsl(243, 33%, 30%);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.suggestions-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.no-words-message {
+  text-align: center;
+  padding: 2rem;
+  width: 100%;
+}
+
+.suggestion-item {
+  padding: 0.75rem 1rem;
+  background-color: hsl(243, 33%, 35%);
+  /*border: 1px solid hsl(243, 33%, 40%);*/
+  border: 1px solid hsl(50, 100%, 49%);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  color: hsl(50, 100%, 49%) !important;
+}
+
+.suggestion-item > .rt-Text {
+  color: hsl(50, 100%, 49%) !important;
+}
+
+.suggestion-item:hover {
+  background-color: hsl(243, 33%, 40%);
+  transform: translateY(-2px);
+  border-color: hsl(50, 100%, 49%);
+}
+
+.history-card {
+  padding: 1.5rem;
+  background-color: hsl(243, 33%, 30%);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-card {
+  padding: 1.5rem;
+  background-color: hsl(243, 33%, 30%);
+  border: 1px solid hsl(243, 33%, 35%);
+  color: hsl(0, 0%, 90%);
+}
+
+.instructions {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.instruction-desktop {
+  display: inline;
+}
+
+.instruction-mobile {
+  display: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.guess-row,
+.result-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.letter-box {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid hsl(243, 33%, 40%);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background-color: hsl(243, 33%, 30%);
+  color: hsl(0, 0%, 90%);
+}
+
+.letter-box.empty {
+  border-color: hsl(243, 33%, 40%);
+  background-color: hsl(243, 33%, 30%);
+}
+
+.letter-box.filled {
+  border-color: hsl(50, 100%, 49%);
+  background-color: hsl(243, 33%, 35%);
+  animation: pop 0.1s;
+}
+
+.letter-box.correct {
+  background-color: hsl(98, 82%, 71%);
+  border-color: hsl(98, 82%, 71%);
+  color: hsl(243, 33%, 25%);
+}
+
+.letter-box.present {
+  background-color: hsl(50, 100%, 49%);
+  border-color: hsl(50, 100%, 49%);
+  color: hsl(243, 33%, 25%);
+}
+
+.letter-box.absent {
+  background-color: hsl(243, 33%, 40%);
+  border-color: hsl(243, 33%, 40%);
+  color: hsl(0, 0%, 60%);
+}
+
+.result-box {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 2px solid hsl(243, 33%, 40%);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background-color: hsl(243, 33%, 30%);
+  color: hsl(0, 0%, 90%);
+}
+
+.result-box.empty {
+  border-color: hsl(243, 33%, 40%);
+  background-color: hsl(243, 33%, 30%);
+}
+
+.result-box.result-green {
+  background-color: hsl(98, 82%, 71%);
+  border-color: hsl(98, 82%, 71%);
+  color: hsl(243, 33%, 25%);
+}
+
+.result-box.result-yellow {
+  background-color: hsl(50, 100%, 49%);
+  border-color: hsl(50, 100%, 49%);
+  color: hsl(243, 33%, 25%);
+}
+
+.result-box.result-black {
+  background-color: hsl(243, 33%, 40%);
+  border-color: hsl(243, 33%, 40%);
+  color: hsl(0, 0%, 60%);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.keyboard.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.keyboard-label {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: hsl(0, 0%, 90%);
+}
+
+.instructions-text-green {
+  color: hsl(98, 82%, 71%);
+}
+
+.instructions-text-yellow {
+  color: hsl(50, 100%, 49%);
+}
+
+.instructions-text-black {
+  color: hsl(243, 33%, 50%);
+}
+
+.instructions-text-white {
+  color: hsl(0, 0%, 90%);
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.key {
+  min-width: 40px;
+  height: 50px;
+  padding: 0 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: hsl(243, 33%, 35%);
+  border: 1px solid hsl(243, 33%, 40%);
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s;
+  white-space: nowrap;
+  color: hsl(0, 0%, 90%);
+}
+
+.key:hover {
+  background-color: hsl(243, 33%, 40%);
+  border-color: hsl(50, 100%, 49%);
+}
+
+.key:active {
+  transform: scale(0.95);
+}
+
+.key-wide {
+  min-width: 65px;
+  font-size: 0.75rem;
+}
+
+.key-green {
+  background-color: hsl(98, 82%, 71%);
+  border-color: hsl(98, 82%, 71%);
+  color: hsl(243, 33%, 25%);
+}
+
+.key-yellow {
+  background-color: hsl(50, 100%, 49%);
+  border-color: hsl(50, 100%, 49%);
+  color: hsl(243, 33%, 25%);
+}
+
+.key-black {
+  background-color: hsl(243, 33%, 40%);
+  border-color: hsl(243, 33%, 40%);
+  color: hsl(0, 0%, 60%);
+}
+
+.rt-reset.rt-BaseButton.rt-r-size-2.rt-variant-soft.rt-Button {
+  cursor: pointer;
+  color: hsl(98, 82%, 71%);
+}
+
+.submit-button {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .instruction-desktop {
+    display: none;
+  }
+
+  .instruction-mobile {
+    display: flex;
+  }
+}
+
+@media (max-width: 600px) {
+  .letter-box,
+  .result-box {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .key {
+    min-width: 32px;
+    height: 42px;
+    font-size: 0.75rem;
+  }
+
+  .key-wide {
+    min-width: 55px;
+  }
+
+  .suggestions-list {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+}

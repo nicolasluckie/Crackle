@@ -1,0 +1,124 @@
+"""Flask API backend for Crackle web interface."""
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import random
+from crackle import load_words, filter_words, rank_words, compute_feedback
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for React frontend
+
+# Load word list once at startup
+WORD_LIST = load_words()
+
+# Store active games in memory (in production, use a proper database)
+games = {}
+
+
+@app.route("/api/words", methods=["GET"])
+def get_words():
+    """Return the full word list."""
+    return jsonify({"words": WORD_LIST, "count": len(WORD_LIST)})
+
+
+@app.route("/api/filter", methods=["POST"])
+def filter_candidates():
+    """Filter words based on guess and result.
+
+    Request body:
+    {
+        "possible_words": ["word1", "word2", ...],
+        "guess": "slate",
+        "result": "bgybb"
+    }
+
+    Returns:
+    {
+        "filtered": ["word1", "word2", ...],
+        "ranked": ["word1", "word2", ...],
+        "count": N
+    }
+    """
+    data = request.json
+    possible_words = data.get("possible_words", WORD_LIST)
+    guess = data.get("guess", "").lower()
+    result = data.get("result", "").lower()
+
+    if not guess or not result:
+        return jsonify({"error": "Missing guess or result"}), 400
+
+    filtered = filter_words(possible_words, guess, result)
+    ranked = rank_words(filtered)
+
+    return jsonify({"filtered": filtered, "ranked": ranked, "count": len(filtered)})
+
+
+@app.route("/api/play/new", methods=["POST"])
+def new_game():
+    """Start a new practice game.
+
+    Returns:
+    {
+        "game_id": "abc123",
+        "message": "Game started"
+    }
+    """
+    game_id = str(random.randint(100000, 999999))
+    target = random.choice(WORD_LIST)
+    games[game_id] = {"target": target, "guesses": []}
+
+    return jsonify({"game_id": game_id, "message": "Game started"})
+
+
+@app.route("/api/play/guess", methods=["POST"])
+def make_guess():
+    """Submit a guess for a practice game.
+
+    Request body:
+    {
+        "game_id": "abc123",
+        "guess": "slate"
+    }
+
+    Returns:
+    {
+        "feedback": "🟩🟨⬛⬛⬛",
+        "correct": false,
+        "guesses": 1
+    }
+    """
+    data = request.json
+    game_id = data.get("game_id")
+    guess = data.get("guess", "").lower()
+
+    if not game_id or game_id not in games:
+        return jsonify({"error": "Invalid game_id"}), 400
+
+    if not guess or len(guess) != 5:
+        return jsonify({"error": "Invalid guess"}), 400
+
+    game = games[game_id]
+    target = game["target"]
+    feedback = compute_feedback(guess, target)
+    game["guesses"].append({"guess": guess, "feedback": feedback})
+
+    correct = guess == target
+
+    return jsonify(
+        {
+            "feedback": feedback,
+            "correct": correct,
+            "guesses": len(game["guesses"]),
+            "target": target if correct else None,
+        }
+    )
+
+
+@app.route("/api/health", methods=["GET"])
+def health():
+    """Health check endpoint."""
+    return jsonify({"status": "ok", "words_loaded": len(WORD_LIST)})
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
