@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Flex, Heading, Text, Card, Spinner, Callout, Link } from "@radix-ui/themes";
+import { Button, Flex, Heading, Text, Card, Spinner, Callout } from "@radix-ui/themes";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import gif from "../assets/ya-done-messed-up.gif";
@@ -8,6 +8,13 @@ import {
   cacheWordList,
   clearWordListCache,
 } from "../utils/wordListCache";
+import {
+  trackCrackGuess,
+  trackCrackWin,
+  trackCrackMessedUp,
+  trackBackButton,
+  trackReset,
+} from "../utils/analytics";
 import "./CrackMode.css";
 
 interface CrackModeProps {
@@ -19,7 +26,10 @@ interface GuessHistory {
   result: string;
 }
 
-const API_URL = "http://localhost:5000";
+// Use environment variable for API URL
+// In development: http://localhost:5000
+// In production (Docker): empty string = relative URLs through nginx proxy
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 // Default starting suggestions for optimal Wordle solving
 const DEFAULT_SUGGESTIONS = [
@@ -56,6 +66,7 @@ function CrackMode({ onBack }: CrackModeProps) {
   const [successWord, setSuccessWord] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitLoadingMessage, setSubmitLoadingMessage] = useState("");
+  const [disabledLetters, setDisabledLetters] = useState<Set<string>>(new Set());
 
   // Refs for smooth scrolling
   const statsCardRef = useRef<HTMLDivElement>(null);
@@ -75,7 +86,7 @@ function CrackMode({ onBack }: CrackModeProps) {
 
       // Handle Enter key
       if (key === "ENTER") {
-        handleSubmitGuess();
+        handleSubmitGuess('enter');
         return;
       }
 
@@ -98,8 +109,8 @@ function CrackMode({ onBack }: CrackModeProps) {
           setCurrentResult(currentResult + key);
         }
       }
-      // Otherwise, handle letter input for guess
-      else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) {
+      // Otherwise, handle letter input for guess (check if letter is not disabled)
+      else if (currentGuess.length < 5 && /^[A-Z]$/.test(key) && !disabledLetters.has(key)) {
         setCurrentGuess(currentGuess + key);
       }
     };
@@ -108,7 +119,7 @@ function CrackMode({ onBack }: CrackModeProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [currentGuess, currentResult, successWord]);
+  }, [currentGuess, currentResult, successWord, disabledLetters]);
 
   // Smooth scroll helper function
   const scrollToElement = (ref: React.RefObject<HTMLDivElement | null>) => {
@@ -160,7 +171,7 @@ function CrackMode({ onBack }: CrackModeProps) {
     }
   };
 
-  const handleSubmitGuess = async () => {
+  const handleSubmitGuess = async (method: 'click' | 'enter' = 'click') => {
     if (currentGuess.length !== 5) {
       setError("Guess must be exactly 5 letters");
       return;
@@ -197,6 +208,9 @@ function CrackMode({ onBack }: CrackModeProps) {
 
       const { filtered, ranked, count } = response.data;
 
+      const newGuessNumber = guessHistory.length + 1;
+      trackCrackGuess(currentGuess, newGuessNumber, count, method);
+
       setGuessHistory([
         ...guessHistory,
         {
@@ -211,13 +225,30 @@ function CrackMode({ onBack }: CrackModeProps) {
       setError("");
       setIsSubmitting(false);
 
+      // Update disabled letters based on result (b = black/absent)
+      const newDisabledLetters = new Set(disabledLetters);
+      const guessLetters = currentGuess.toUpperCase().split('');
+      const resultChars = currentResult.toLowerCase().split('');
+
+      guessLetters.forEach((letter, index) => {
+        if (resultChars[index] === 'b') {
+          newDisabledLetters.add(letter);
+        }
+      });
+      setDisabledLetters(newDisabledLetters);
+
       // Scroll to stats card after submission
       setTimeout(() => {
         scrollToElement(statsCardRef);
       }, 100);
 
       if (count === 1) {
-        setSuccessWord(ranked[0].toUpperCase());
+        const crackedWord = ranked[0].toUpperCase();
+        setSuccessWord(crackedWord);
+        trackCrackWin(newGuessNumber, crackedWord);
+      } else if (count === 0) {
+        // User has no words remaining - they messed up!
+        trackCrackMessedUp(newGuessNumber);
       }
     } catch (err) {
       setError("Failed to filter words");
@@ -228,10 +259,10 @@ function CrackMode({ onBack }: CrackModeProps) {
 
   const handleGuessKeyPress = (key: string) => {
     if (key === "ENTER") {
-      handleSubmitGuess();
+      handleSubmitGuess('click');
     } else if (key === "BACKSPACE") {
       setCurrentGuess(currentGuess.slice(0, -1));
-    } else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) {
+    } else if (currentGuess.length < 5 && /^[A-Z]$/.test(key) && !disabledLetters.has(key)) {
       setCurrentGuess(currentGuess + key);
     }
   };
@@ -242,9 +273,7 @@ function CrackMode({ onBack }: CrackModeProps) {
     } else if (key === "BACKSPACE") {
       setCurrentResult(currentResult.slice(0, -1));
     }
-  };
-
-  const renderGuessHistoryRow = (item: GuessHistory, index: number) => {
+  };  const renderGuessHistoryRow = (item: GuessHistory, index: number) => {
     const letters = item.guess.split("");
     const results = item.result.split("");
 
@@ -319,6 +348,8 @@ function CrackMode({ onBack }: CrackModeProps) {
   const resultKeyboard = [["G", "Y", "B", "BACKSPACE"]];
 
   const resetGame = (event?: React.MouseEvent) => {
+    trackReset('crack');
+
     // If Shift key is held, also clear the cache
     if (event?.shiftKey) {
       clearWordListCache();
@@ -331,12 +362,16 @@ function CrackMode({ onBack }: CrackModeProps) {
     setCurrentResult("");
     setError("");
     setSuccessWord(null);
+    setDisabledLetters(new Set());
   };
 
   return (
     <div className="crack-mode">
       <div className="game-header">
-        <Button variant="soft" onClick={onBack} className="back-button">
+        <Button variant="soft" onClick={() => {
+          trackBackButton('crack');
+          onBack();
+        }} className="back-button">
           Back
         </Button>
         <Heading size="6">Crack Wordle</Heading>
@@ -534,18 +569,21 @@ function CrackMode({ onBack }: CrackModeProps) {
             </Text>
             {guessKeyboard.map((row, rowIndex) => (
               <div key={rowIndex} className="keyboard-row">
-                {row.map((key) => (
-                  <button
-                    key={key}
-                    className={`key ${
-                      key === "ENTER" || key === "BACKSPACE" ? "key-wide" : ""
-                    }`}
-                    onClick={() => handleGuessKeyPress(key)}
-                    disabled={!!successWord}
-                  >
-                    {key === "BACKSPACE" ? "⌫" : key}
-                  </button>
-                ))}
+                {row.map((key) => {
+                  const isDisabled = disabledLetters.has(key);
+                  return (
+                    <button
+                      key={key}
+                      className={`key ${
+                        key === "ENTER" || key === "BACKSPACE" ? "key-wide" : ""
+                      } ${isDisabled ? "key-disabled" : ""}`}
+                      onClick={() => handleGuessKeyPress(key)}
+                      disabled={!!successWord || isDisabled}
+                    >
+                      {key === "BACKSPACE" ? "⌫" : key}
+                    </button>
+                  );
+                })}
               </div>
             ))}
 
@@ -583,7 +621,7 @@ function CrackMode({ onBack }: CrackModeProps) {
             <div ref={submitButtonRef}>
               <Button
                 size="3"
-                onClick={handleSubmitGuess}
+                onClick={() => handleSubmitGuess('click')}
                 className="submit-button"
                 disabled={
                   currentGuess.length !== 5 ||

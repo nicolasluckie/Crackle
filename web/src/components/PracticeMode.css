@@ -256,6 +256,13 @@
   cursor: not-allowed;
 }
 
+.key-disabled {
+  background-color: hsl(243, 33%, 25%) !important;
+  color: hsl(0, 0%, 40%) !important;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* Key states based on letter feedback */
 .key-green {
   background-color: hsl(98, 82%, 71%);

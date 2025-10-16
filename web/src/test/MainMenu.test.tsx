@@ -78,7 +78,7 @@ describe('MainMenu', () => {
     await userEvent.click(crackButton);
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('http://localhost:5000/api/words');
+      expect(mockedAxios.get).toHaveBeenCalledWith('/api/words');
     });
   });
 

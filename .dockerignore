@@ -48,8 +48,11 @@ coverage/
 .git/
 .gitignore
 
-# Docker
-docker/
+# Docker (but keep nginx.conf for frontend stage)
+docker/*.md
+docker/.env*
+docker/manage.sh
+docker/manage.bat
 Dockerfile
 docker-compose.yml
 .dockerignore

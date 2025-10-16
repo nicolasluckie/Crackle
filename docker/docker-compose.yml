@@ -1,13 +1,15 @@
-version: '3.8'
-
 services:
-  crackle:
+  backend:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: crackle-app
-    ports:
-      - "5000:5000"
+      target: backend
+    container_name: crackle-backend
+    # No external ports exposed - backend is internal only
+    expose:
+      - "5000"
+    env_file:
+      - .env
     environment:
       - FLASK_ENV=production
       - PYTHONUNBUFFERED=1
@@ -18,3 +20,37 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    networks:
+      - crackle-internal
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: frontend
+      args:
+        - VITE_ANALYTICS_URL=${VITE_ANALYTICS_URL:-}
+        - VITE_ANALYTICS_WEBSITE_ID=${VITE_ANALYTICS_WEBSITE_ID:-}
+    container_name: crackle-frontend
+    ports:
+      - "8080:80"  # Only nginx exposed externally
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      crackle-internal:
+      cloudflare_network:
+        aliases:
+          - crackle
+
+networks:
+  crackle-internal:
+    driver: bridge
+    internal: false  # Allows outbound but backend not directly accessible from host
+  cloudflare_network:
+    external: true  # External network for cloudflared tunnel connection

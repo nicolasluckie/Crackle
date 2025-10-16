@@ -1,25 +1,32 @@
-# Multi-stage Dockerfile for Crackle
+# Multi-stage Dockerfile for Crackle with separate frontend and backend
 # Stage 1: Build the React frontend
 FROM node:18-alpine AS frontend-builder
 
 WORKDIR /app/web
 
+# Accept build arguments for analytics configuration
+ARG VITE_ANALYTICS_URL
+ARG VITE_ANALYTICS_WEBSITE_ID
+
 # Copy frontend package files
 COPY web/package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (including devDependencies for build tools like TypeScript)
+RUN npm ci
 
 # Copy frontend source code
 COPY web/ ./
 
-# Build the React application
+# Build the React application with environment variables
 RUN npm run build
 
-# Stage 2: Setup Python backend and serve the application
-FROM python:3.11-slim
+# Stage 2: Backend service (Flask API)
+FROM python:3.11-slim AS backend
 
 WORKDIR /app
+
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt ./
@@ -30,10 +37,7 @@ COPY crackle.py ./
 COPY api.py ./
 COPY wordle_answers.txt ./
 
-# Copy built frontend from the first stage
-COPY --from=frontend-builder /app/web/dist ./web/dist
-
-# Expose the Flask API port
+# Expose the Flask API port (internal only)
 EXPOSE 5000
 
 # Set environment variables
@@ -41,4 +45,20 @@ ENV FLASK_APP=api.py
 ENV PYTHONUNBUFFERED=1
 
 # Use gunicorn for production
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "60", "api:app"]
+# Note: Using 1 worker with 4 threads - threads share memory for game state
+# This allows concurrent requests while keeping in-memory state working
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "4", "--timeout", "60", "api:app"]
+
+# Stage 3: Frontend service (nginx)
+FROM nginx:alpine AS frontend
+
+# Copy custom nginx configuration
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy built frontend from the builder stage
+COPY --from=frontend-builder /app/web/dist /usr/share/nginx/html
+
+# Expose nginx port
+EXPOSE 80
+
+# nginx will start automatically with the default CMD

@@ -22,9 +22,9 @@
     margin-bottom: 1rem;
     margin-left: 0;
     text-align: center;
-    line-height: 1;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.2;
+    font-weight: normal;
+    font-family: 'Courier New', 'Courier', 'Monaco', 'Menlo', 'Consolas', monospace;
     color: hsl(0, 0%, 90%);
     white-space: pre;
     overflow-x: auto;
@@ -32,6 +32,21 @@
     font-size: clamp(0.4rem, 2vw, 1rem);
     position: relative;
     z-index: 1;
+    letter-spacing: 0;
+    word-spacing: 0;
+}
+
+.banner pre {
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    white-space: pre;
+    letter-spacing: 0;
+    word-spacing: 0;
+    font-feature-settings: normal;
+    font-variant-ligatures: none;
 }
 
 .menu-content {

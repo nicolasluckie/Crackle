@@ -427,6 +427,19 @@
   color: hsl(0, 0%, 60%);
 }
 
+.key-disabled {
+  background-color: hsl(243, 33%, 25%) !important;
+  border-color: hsl(243, 33%, 30%) !important;
+  color: hsl(0, 0%, 40%) !important;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.key-disabled:hover {
+  background-color: hsl(243, 33%, 25%) !important;
+  border-color: hsl(243, 33%, 30%) !important;
+}
+
 .rt-reset.rt-BaseButton.rt-r-size-2.rt-variant-soft.rt-Button {
   cursor: pointer;
   color: hsl(98, 82%, 71%);

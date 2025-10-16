@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Features
+- add Docker deployment with security isolation and privacy-focused analytics
 - remove git-chglog pre-push hook from pre-commit configuration Just execute `git-chglog -o CHANGELOG.MD` manually before committing changes
 - simplify git-chglog pre-push hook command for clarity
 - add pre_commit dependency to requirements.txt

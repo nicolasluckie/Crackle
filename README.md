@@ -37,7 +37,7 @@ Practice or Crack the daily Wordle 💥
 
 ## How It Works
 
-A list of 14,855 valid 5-letter Wordle answers is loaded from `wordle_answers.txt`. Obtained from [dracos/valid-wordle-words.txt](https://gist.github.com/dracos/dd0668f281e685bad51479e5acaadb93).
+A list of 14,801 valid 5-letter Wordle answers is loaded from `wordle_answers.txt`. Obtained from [dracos/valid-wordle-words.txt](https://gist.github.com/dracos/dd0668f281e685bad51479e5acaadb93).
 
 You can then enter a guess and the corresponding results (g/y/b) to filter down the possible answers.
 
@@ -77,6 +77,13 @@ npm install
 pip install flask flask-cors
 ```
 
+3. (Optional) Configure analytics in `web/.env.local`:
+```bash
+# Leave empty to disable analytics during development
+VITE_ANALYTICS_URL=
+VITE_ANALYTICS_WEBSITE_ID=
+```
+
 #### Production Setup (Docker)
 
 1. Navigate to the docker directory:
@@ -84,12 +91,18 @@ pip install flask flask-cors
 cd docker
 ```
 
-2. Build and start the application:
+2. Configure environment (copy and edit `.env.production` to `.env`):
+```bash
+cp .env.production .env
+# Edit .env to configure CORS and analytics (optional)
+```
+
+3. Build and start the application:
 ```bash
 docker-compose up -d
 ```
 
-3. Access the application at `http://localhost:5000`
+4. Access the application at `http://localhost:8080`
 
 See [`docker/README.md`](./docker/README.md) for detailed Docker deployment instructions.
 
@@ -259,7 +272,7 @@ Additional testing examples, best practices, and debugging tips are available in
 crackle/
 ├── crackle.py                   # Python CLI implementation
 ├── api.py                       # Flask API backend
-├── wordle_answers.txt           # 14,855 valid 5-letter words
+├── wordle_answers.txt           # 14,801 valid 5-letter words
 ├── tests/                       # Python tests
 │   └── test_crackle.py
 ├── web/                         # React web interface
@@ -305,3 +318,11 @@ The Flask backend (`api.py`) provides:
 ## License
 
 Crackle is open-sourced software licensed under the [MIT license](./LICENSE).
+
+## Privacy & Analytics
+
+Crackle uses optional Umami Analytics for anonymous usage tracking (no cookies, GDPR-compliant). Analytics can be disabled via environment configuration. See [PRIVACY.md](./PRIVACY.md) for details.
+
+---
+
+> **Disclaimer:** _Crackle is not affiliated with, endorsed by, or connected to Wordle, The New York Times, or any official Wordle entities. This is an independent passion project created for educational and entertainment purposes._
