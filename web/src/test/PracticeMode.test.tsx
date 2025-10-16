@@ -17,7 +17,7 @@ describe('PracticeMode', () => {
 
     // Setup default cached word list
     const cachedData = {
-      words: ['apple', 'crane', 'slate', 'stale', 'steal', 'split', 'found', 'month', 'world'],
+      words: ['apple', 'crane', 'slate', 'stale', 'steal', 'split', 'found', 'month', 'world', 'barer'],
       timestamp: Date.now(),
       version: '1.0',
     };
@@ -360,6 +360,105 @@ describe('PracticeMode', () => {
     expect(oButton).toBeDisabled();
     expect(cButton).toBeDisabled(); // Still disabled from first guess
     expect(rButton).toBeDisabled(); // Still disabled from first guess
+  });
+
+  it('does not disable letter when one instance is black but another is green/yellow', async () => {
+    mockedAxios.post.mockResolvedValueOnce({
+      data: {
+        game_id: 'test-game-123',
+      },
+    });
+
+    // Simulate guess with duplicate letters where one is green and one is black
+    // Use a real word from cache: APPLE -> target STALE
+    // Result: A=yellow, P=black, P=black, L=yellow, E=green
+    // So P should be disabled (both black), but A and E should not be disabled
+    mockedAxios.post.mockResolvedValueOnce({
+      data: {
+        feedback: '🟨⬛⬛🟨🟩', // A=yellow, P=black, P=black, L=yellow, E=green
+        correct: false,
+        target: 'stale',
+      },
+    });
+
+    render(<PracticeMode onBack={mockOnBack} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Practice Mode')).toBeInTheDocument();
+    });
+
+    // Type APPLE (has duplicate P)
+    await userEvent.keyboard('APPLE');
+
+    const submitButton = screen.getByRole('button', { name: /submit guess/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      const guessRows = document.querySelectorAll('.guess-row');
+      expect(guessRows.length).toBeGreaterThan(0);
+    });
+
+    // Wait for animation to complete
+    await new Promise(resolve => setTimeout(resolve, 1600));
+
+    // Verify: P should be disabled (both instances black), but A and E should NOT be disabled
+    const pButton = screen.getByRole('button', { name: 'P' });
+    const aButton = screen.getByRole('button', { name: 'A' });
+    const eButton = screen.getByRole('button', { name: 'E' });
+    const lButton = screen.getByRole('button', { name: 'L' });
+
+    expect(pButton).toBeDisabled(); // Both P instances are black
+    expect(aButton).not.toBeDisabled(); // A is yellow
+    expect(eButton).not.toBeDisabled(); // E is green
+    expect(lButton).not.toBeDisabled(); // L is yellow
+  });
+
+  it('BARER vs ALTER: result ⬛🟨⬛🟩🟩 does not disable R and disables only B', async () => {
+    // Start game
+    mockedAxios.post.mockResolvedValueOnce({
+      data: { game_id: 'test-game-123' },
+    });
+
+    // Submit guess response: BARER against ALTER -> ⬛🟨⬛🟩🟩
+    mockedAxios.post.mockResolvedValueOnce({
+      data: {
+        feedback: '⬛🟨⬛🟩🟩', // B=black, A=yellow, R=black, E=green, R=green
+        correct: false,
+        target: 'alter',
+      },
+    });
+
+    render(<PracticeMode onBack={mockOnBack} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Practice Mode')).toBeInTheDocument();
+    });
+
+    // Type BARER (from cached list)
+    await userEvent.keyboard('BARER');
+
+    const submitButton = screen.getByRole('button', { name: /submit guess/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      const guessRows = document.querySelectorAll('.guess-row');
+      expect(guessRows.length).toBeGreaterThan(0);
+    });
+
+    // Wait for animation to complete
+    await new Promise(resolve => setTimeout(resolve, 1600));
+
+    // R should NOT be disabled because one R is green
+    const rButton = screen.getByRole('button', { name: 'R' });
+    expect(rButton).not.toBeDisabled();
+
+    // Count disabled keys - should be exactly 1 (only B is black-only)
+    const disabledKeys = document.querySelectorAll('.key.key-disabled');
+    expect(disabledKeys.length).toBe(1);
+
+    // And B should be disabled
+    const bButton = screen.getByRole('button', { name: 'B' });
+    expect(bButton).toBeDisabled();
   });
 
   it('calls onBack when back button clicked', async () => {

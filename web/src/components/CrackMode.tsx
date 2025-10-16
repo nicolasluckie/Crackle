@@ -226,12 +226,24 @@ function CrackMode({ onBack }: CrackModeProps) {
       setIsSubmitting(false);
 
       // Update disabled letters based on result (b = black/absent)
+      // Only disable a letter if ALL instances of it are black (no green or yellow)
       const newDisabledLetters = new Set(disabledLetters);
       const guessLetters = currentGuess.toUpperCase().split('');
       const resultChars = currentResult.toLowerCase().split('');
 
+      // Group indices by letter
+      const letterIndices = new Map<string, number[]>();
       guessLetters.forEach((letter, index) => {
-        if (resultChars[index] === 'b') {
+        if (!letterIndices.has(letter)) {
+          letterIndices.set(letter, []);
+        }
+        letterIndices.get(letter)!.push(index);
+      });
+
+      // Only disable if all instances of a letter are black
+      letterIndices.forEach((indices, letter) => {
+        const allBlack = indices.every(index => resultChars[index] === 'b');
+        if (allBlack) {
           newDisabledLetters.add(letter);
         }
       });

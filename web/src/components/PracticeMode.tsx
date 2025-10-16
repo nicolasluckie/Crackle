@@ -40,6 +40,13 @@ const SUBMIT_LOADING_MESSAGES = [
   'Processing your guess...',
 ];
 
+/**
+ * Practice Mode Component
+ *
+ * Developer Testing:
+ * Open browser console and use: setTargetWord("CRANE")
+ * to set a specific target word for testing duplicate letters, edge cases, etc.
+ */
 function PracticeMode({ onBack }: PracticeModeProps) {
   const [gameId, setGameId] = useState<string | null>(null);
   const [currentGuess, setCurrentGuess] = useState('');
@@ -56,6 +63,48 @@ function PracticeMode({ onBack }: PracticeModeProps) {
     loadWordList();
     startNewGame();
   }, []);
+
+  // Developer console command to set target word for testing
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).setTargetWord = (word: string) => {
+        if (word.length !== 5) {
+          console.error('❌ Word must be exactly 5 letters');
+          return;
+        }
+        if (!/^[a-zA-Z]+$/.test(word)) {
+          console.error('❌ Word must contain only letters');
+          return;
+        }
+        const lowerWord = word.toLowerCase();
+        if (wordList.length > 0 && !wordList.includes(lowerWord)) {
+          console.warn('⚠️  Word not in word list, but setting anyway');
+        }
+
+        // Reset game state
+        setGuesses([]);
+        setCurrentGuess('');
+        setGameWon(false);
+        setTarget(null);
+        setError('');
+        setDisabledLetters(new Set());
+
+        // Set the custom target (store in gameId as a special marker)
+        setGameId(`custom:${lowerWord}`);
+
+        console.log(`✅ Target word set to: ${word.toUpperCase()}`);
+        console.log('💡 Now make your guesses to test!');
+      };
+
+      console.log('🎮 Developer command available: setTargetWord("CRANE")');
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as any).setTargetWord;
+      }
+    };
+  }, [wordList]);
 
   const loadWordList = async () => {
     try {
@@ -99,6 +148,37 @@ function PracticeMode({ onBack }: PracticeModeProps) {
     }
   };
 
+  // Helper function to compute feedback locally (for custom target word)
+  const computeFeedbackLocally = (guess: string, target: string): string => {
+    const guessChars = guess.toLowerCase().split('');
+    const targetChars = target.toLowerCase().split('');
+    const feedback = Array(5).fill('⬛');
+    const targetCounts = new Map<string, number>();
+
+    // Count target letters
+    targetChars.forEach(char => {
+      targetCounts.set(char, (targetCounts.get(char) || 0) + 1);
+    });
+
+    // First pass: mark greens
+    guessChars.forEach((char, i) => {
+      if (char === targetChars[i]) {
+        feedback[i] = '🟩';
+        targetCounts.set(char, targetCounts.get(char)! - 1);
+      }
+    });
+
+    // Second pass: mark yellows
+    guessChars.forEach((char, i) => {
+      if (feedback[i] !== '🟩' && targetCounts.get(char)! > 0) {
+        feedback[i] = '🟨';
+        targetCounts.set(char, targetCounts.get(char)! - 1);
+      }
+    });
+
+    return feedback.join('');
+  };
+
   const handleSubmitGuess = async (method: 'click' | 'enter' = 'click') => {
     if (currentGuess.length !== 5) {
       setError('Guess must be exactly 5 letters');
@@ -121,12 +201,27 @@ function PracticeMode({ onBack }: PracticeModeProps) {
     setSubmitLoadingMessage(randomMessage);
 
     try {
-      const response = await axios.post(`${API_URL}/api/play/guess`, {
-        game_id: gameId,
-        guess: currentGuess.toLowerCase(),
-      });
+      let feedback: string;
+      let correct: boolean;
+      let revealedTarget: string;
 
-      const { feedback, correct, target: revealedTarget } = response.data;
+      // Check if using custom target word (for testing)
+      if (gameId?.startsWith('custom:')) {
+        const customTarget = gameId.substring(7); // Remove "custom:" prefix
+        feedback = computeFeedbackLocally(currentGuess, customTarget);
+        correct = currentGuess.toLowerCase() === customTarget;
+        revealedTarget = customTarget;
+
+        // Simulate API delay for realistic feel
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } else {
+        // Normal API call
+        const response = await axios.post(`${API_URL}/api/play/guess`, {
+          game_id: gameId,
+          guess: currentGuess.toLowerCase(),
+        });
+        ({ feedback, correct, target: revealedTarget } = response.data);
+      }
 
       // Track the guess
       const guessNumber = guesses.length + 1;
@@ -144,12 +239,24 @@ function PracticeMode({ onBack }: PracticeModeProps) {
       setIsSubmitting(false);
 
       // Update disabled letters based on feedback (⬛ = black/absent)
+      // Only disable a letter if ALL instances of it are black (no green or yellow)
       const newDisabledLetters = new Set(disabledLetters);
       const guessLetters = currentGuess.toUpperCase().split('');
       const feedbackEmojis = [...feedback];
 
+      // Group indices by letter
+      const letterIndices = new Map<string, number[]>();
       guessLetters.forEach((letter, index) => {
-        if (feedbackEmojis[index] === '⬛') {
+        if (!letterIndices.has(letter)) {
+          letterIndices.set(letter, []);
+        }
+        letterIndices.get(letter)!.push(index);
+      });
+
+      // Only disable if all instances of a letter are black
+      letterIndices.forEach((indices, letter) => {
+        const allBlack = indices.every(index => feedbackEmojis[index] === '⬛');
+        if (allBlack) {
           newDisabledLetters.add(letter);
         }
       });

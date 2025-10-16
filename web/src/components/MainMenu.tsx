@@ -6,6 +6,7 @@ import { trackPageView, trackModeSelection } from '../utils/analytics';
 import "./MainMenu.css";
 import LetterGlitch from "./ReactBits/LetterGlitch";
 import DecryptedText from "./ReactBits/DecryptedText";
+import AsciiBanner from "./AsciiBanner";
 
 
 interface MainMenuProps {
@@ -117,14 +118,7 @@ function MainMenu({ onSelectMode }: MainMenuProps) {
         />
       </div>
       <div className="banner">
-        <pre>
-{` ██████╗██████╗  █████╗  ██████╗██╗  ██╗██╗     ███████╗
-██╔════╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██║     ██╔════╝
-██║     ██████╔╝███████║██║     █████╔╝ ██║     █████╗
-██║     ██╔══██╗██╔══██║██║     ██╔═██╗ ██║     ██╔══╝
-╚██████╗██║  ██║██║  ██║╚██████╗██║  ██╗███████╗███████╗
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝`}
-        </pre>
+        <AsciiBanner />
       </div>
 
       <Flex direction="column" gap="4" align="center" className="menu-content">

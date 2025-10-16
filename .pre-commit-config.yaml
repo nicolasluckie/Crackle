@@ -5,8 +5,8 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-        # Avoid stripping spaces from ASCII art in crackle.py
-        exclude: ^crackle\.py$
+        # Avoid stripping spaces from ASCII art in crackle.py and AsciiBanner.tsx
+        exclude: ^crackle\.py$|web/src/components/AsciiBanner\.tsx$
       - id: mixed-line-ending
         args: ["--fix=auto"]
 
