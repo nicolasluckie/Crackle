@@ -2,14 +2,8 @@
 ## [Unreleased]
 
 ### Features
-- add Docker deployment with security isolation and privacy-focused analytics
-- remove git-chglog pre-push hook from pre-commit configuration Just execute `git-chglog -o CHANGELOG.MD` manually before committing changes
-- simplify git-chglog pre-push hook command for clarity
-- add pre_commit dependency to requirements.txt
-- enhance git-chglog hook for cross-platform compatibility
-- add git-chglog hook to update CHANGELOG before push
-- **docker:** add Docker deployment with multi-stage build
-
+- add setTargetWord console command, fix duplicate-letter key disabling, and extract ASCII banner
+- add Docker deployment with multi-stage build, security isolation and privacy-focused analytics
 
 <a name="v1.0.0"></a>
 ## v1.0.0 - 2025-10-13
@@ -23,4 +17,4 @@
 - Merge pull request [#1](https://github.com/nicolasluckie/crackle/issues/1) from nicolasluckie/web-interface
 
 
-[Unreleased]: https://github.com/nicolasluckie/crackle/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/nicolasluckie/Crackle/compare/main...feat/add-docker
