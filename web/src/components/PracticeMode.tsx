@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Flex, Heading, Text, Card, Spinner, Callout } from '@radix-ui/themes';
+import Toast from './ReactBits/Toast';
 import axios from 'axios';
 import './PracticeMode.css';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
@@ -58,6 +59,14 @@ function PracticeMode({ onBack }: PracticeModeProps) {
   const [submitLoadingMessage, setSubmitLoadingMessage] = useState('');
   const [wordList, setWordList] = useState<string[]>([]);
   const [disabledLetters, setDisabledLetters] = useState<Set<string>>(new Set());
+  // Toast + anti-spam state for New Game
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'danger'>('success');
+  const [pendingToast, setPendingToast] = useState(false);
+  const [pressCount, setPressCount] = useState(0);
+  const [newGameDisabled, setNewGameDisabled] = useState(false);
+  const [newGameButtonText, setNewGameButtonText] = useState('New Game');
 
   useEffect(() => {
     loadWordList();
@@ -147,6 +156,60 @@ function PracticeMode({ onBack }: PracticeModeProps) {
       console.error(err);
     }
   };
+
+  const showSuccessToast = (message: string) => {
+    setToastType('success');
+    setToastMessage(message);
+    setToastOpen(true);
+  };
+
+  const showDangerToast = (message: string, disableMs = 5000) => {
+    setToastType('danger');
+    setToastMessage(message);
+    setToastOpen(true);
+    setNewGameDisabled(true);
+    setNewGameButtonText('🦎');
+    setTimeout(() => {
+      setNewGameDisabled(false);
+      setNewGameButtonText('New Game');
+      setPressCount(0);
+    }, disableMs);
+  };
+
+  const handleNewGameClick = () => {
+    trackNewGame('practice');
+
+    // If a toast is currently showing, queue logic and anti-spam handling
+    if (toastOpen) {
+      const next = pressCount + 1;
+      setPressCount(next);
+      // On the 5th press exactly, punish and disable
+      if (next === 4 && !newGameDisabled) {
+        // Clear any pending action so we don't enqueue a success after re-enable
+        setPendingToast(false);
+        showDangerToast('Lizard, lizard, lizard, lizard, lizard! 🦎');
+      } else {
+        // Wait until current toast dismisses; don't show another
+        setPendingToast(true);
+      }
+      return;
+    }
+
+    // No toast showing; proceed to start game and show success toast
+    startNewGame();
+    showSuccessToast('New word chosen!');
+    setPressCount(0);
+  };
+
+  // When a toast closes, if there was a queued request, run it now
+  useEffect(() => {
+    if (!toastOpen && pendingToast && !newGameDisabled) {
+      setPendingToast(false);
+      startNewGame();
+      showSuccessToast('New word chosen!');
+      setPressCount(0);
+    }
+  }, [toastOpen, pendingToast, newGameDisabled]);
 
   // Helper function to compute feedback locally (for custom target word)
   const computeFeedbackLocally = (guess: string, target: string): string => {
@@ -366,11 +429,8 @@ function PracticeMode({ onBack }: PracticeModeProps) {
           Back
         </Button>
         <Heading size="6">Practice Mode</Heading>
-        <Button variant="soft" onClick={() => {
-          trackNewGame('practice');
-          startNewGame();
-        }}>
-          New Game
+        <Button variant="soft" onClick={handleNewGameClick} disabled={newGameDisabled}>
+          {newGameButtonText}
         </Button>
       </div>
 
@@ -404,7 +464,7 @@ function PracticeMode({ onBack }: PracticeModeProps) {
             <Text size="3">
               The word was <strong><span className="success-msg">{target}</span></strong>
             </Text>
-            <Button onClick={startNewGame} size="3">
+            <Button onClick={handleNewGameClick} size="3">
               Play Again
             </Button>
           </Flex>
@@ -446,6 +506,7 @@ function PracticeMode({ onBack }: PracticeModeProps) {
           )}
         </Button>
       </div>
+  <Toast open={toastOpen} message={toastMessage} type={toastType} duration={3000} onClose={() => setToastOpen(false)} position="top-left" />
     </div>
   );
 }

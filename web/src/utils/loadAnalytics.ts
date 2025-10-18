@@ -1,23 +1,24 @@
 /**
- * Dynamically load Umami analytics script
+ * Dynamically load Rybbit analytics script
  * Uses environment variables for configuration
  */
 
-const ANALYTICS_URL = import.meta.env.VITE_ANALYTICS_URL;
-const ANALYTICS_WEBSITE_ID = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
+const RYBBIT_SCRIPT_URL = import.meta.env.VITE_RYBBIT_SCRIPT_URL as string | undefined;
+const RYBBIT_SITE_ID = import.meta.env.VITE_RYBBIT_SITE_ID as string | undefined;
+const RYBBIT_API_KEY = import.meta.env.VITE_RYBBIT_API_KEY as string | undefined; // dev-only for localhost
 
 /**
- * Load the Umami analytics script if configured
+ * Load the Rybbit analytics script if configured
  */
 export function loadAnalytics(): void {
   // Skip if analytics is not configured
-  if (!ANALYTICS_URL || !ANALYTICS_WEBSITE_ID) {
+  if (!RYBBIT_SCRIPT_URL || !RYBBIT_SITE_ID) {
     console.info('Analytics not configured - skipping tracking');
     return;
   }
 
-  // Check if script is already loaded
-  if (document.querySelector(`script[data-website-id="${ANALYTICS_WEBSITE_ID}"]`)) {
+  // Check if script is already loaded (Rybbit uses data-site-id)
+  if (document.querySelector(`script[data-site-id="${RYBBIT_SITE_ID}"]`)) {
     console.info('Analytics script already loaded');
     return;
   }
@@ -25,8 +26,13 @@ export function loadAnalytics(): void {
   // Create and append the analytics script
   const script = document.createElement('script');
   script.defer = true;
-  script.src = ANALYTICS_URL;
-  script.setAttribute('data-website-id', ANALYTICS_WEBSITE_ID);
+  script.src = RYBBIT_SCRIPT_URL;
+  script.setAttribute('data-site-id', RYBBIT_SITE_ID);
+
+  // Only include API key for localhost/dev if provided
+  if (import.meta.env.DEV && RYBBIT_API_KEY) {
+    script.setAttribute('data-api-key', RYBBIT_API_KEY);
+  }
 
   script.onerror = () => {
     console.warn('Failed to load analytics script');

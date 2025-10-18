@@ -55,11 +55,14 @@ Edit `.env` and configure:
 ALLOWED_ORIGINS=https://example.domain.com
 
 # Optional: Configure analytics (leave empty to disable)
-VITE_ANALYTICS_URL=https://analytics.example.com/script.js
-VITE_ANALYTICS_WEBSITE_ID=your-website-id
+# Rybbit tracking script URL, site ID, and optional dev API key
+VITE_RYBBIT_SCRIPT_URL=https://rybbit.example.com/api/script.js
+VITE_RYBBIT_SITE_ID=your-site-id
+# Only for localhost tracking during development; DO NOT use in production
+VITE_RYBBIT_API_KEY=rb_your_local_dev_api_key
 ```
 
-**Note:** If you don't want analytics, simply leave `VITE_ANALYTICS_URL` and `VITE_ANALYTICS_WEBSITE_ID` empty or comment them out.
+**Note:** If you don't want analytics, simply leave `VITE_RYBBIT_SCRIPT_URL` and `VITE_RYBBIT_SITE_ID` empty or comment them out.
 
 ### 2. Create Docker Network
 

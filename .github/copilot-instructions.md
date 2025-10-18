@@ -17,7 +17,7 @@ Crackle is a Wordle solver and practice tool with both a web interface and CLI. 
 - `web/src/components/MainMenu.tsx` — Mode selection with word list preloading.
 - `web/src/components/PracticeMode.tsx` — Play unlimited Wordle games with emoji feedback.
 - `web/src/components/CrackMode.tsx` — Get suggestions to solve the daily Wordle.
-- `web/src/utils/analytics.ts` — Umami analytics tracking (privacy-focused, no cookies).
+- `web/src/utils/analytics.ts` — Rybbit analytics tracking (privacy-focused, no cookies).
 - `web/src/utils/wordListCache.ts` — localStorage caching (7-day expiration, 200KB word list).
 - `web/src/test/` — Vitest + React Testing Library tests for all components.
 
@@ -136,7 +136,7 @@ manage.bat start|stop|restart|rebuild|logs|status|health|shell|clean
 
 ## Analytics (Privacy-Focused)
 
-### Umami Integration
+### Rybbit Integration
 - **Privacy**: No cookies, anonymous, GDPR-compliant, country-level location only.
 
 ### Tracked Events

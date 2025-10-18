@@ -4,9 +4,15 @@ FROM node:18-alpine AS frontend-builder
 
 WORKDIR /app/web
 
-# Accept build arguments for analytics configuration
-ARG VITE_ANALYTICS_URL
-ARG VITE_ANALYTICS_WEBSITE_ID
+# Accept build arguments for analytics configuration (Rybbit)
+ARG VITE_RYBBIT_SCRIPT_URL
+ARG VITE_RYBBIT_SITE_ID
+ARG VITE_RYBBIT_API_KEY
+
+# Make the variables available to Vite during `npm run build`
+ENV VITE_RYBBIT_SCRIPT_URL=$VITE_RYBBIT_SCRIPT_URL \
+	VITE_RYBBIT_SITE_ID=$VITE_RYBBIT_SITE_ID \
+	VITE_RYBBIT_API_KEY=$VITE_RYBBIT_API_KEY
 
 # Copy frontend package files
 COPY web/package*.json ./

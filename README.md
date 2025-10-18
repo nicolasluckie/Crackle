@@ -80,8 +80,10 @@ pip install flask flask-cors
 3. (Optional) Configure analytics in `web/.env.local`:
 ```bash
 # Leave empty to disable analytics during development
-VITE_ANALYTICS_URL=
-VITE_ANALYTICS_WEBSITE_ID=
+VITE_RYBBIT_SCRIPT_URL=
+VITE_RYBBIT_SITE_ID=
+# For localhost tracking only (do not set in production builds)
+# VITE_RYBBIT_API_KEY=rb_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 #### Production Setup (Docker)
@@ -321,7 +323,7 @@ Crackle is open-sourced software licensed under the [MIT license](./LICENSE).
 
 ## Privacy & Analytics
 
-Crackle uses optional Umami Analytics for anonymous usage tracking (no cookies, GDPR-compliant). Analytics can be disabled via environment configuration. See [PRIVACY.md](./PRIVACY.md) for details.
+Crackle uses optional Rybbit Analytics for anonymous usage tracking (no cookies, GDPR-friendly). Analytics can be disabled via environment configuration. See [PRIVACY.md](./PRIVACY.md) for details.
 
 ---
 

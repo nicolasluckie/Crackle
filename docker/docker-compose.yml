@@ -29,8 +29,9 @@ services:
       dockerfile: docker/Dockerfile
       target: frontend
       args:
-        - VITE_ANALYTICS_URL=${VITE_ANALYTICS_URL:-}
-        - VITE_ANALYTICS_WEBSITE_ID=${VITE_ANALYTICS_WEBSITE_ID:-}
+        - VITE_RYBBIT_SCRIPT_URL=${VITE_RYBBIT_SCRIPT_URL:-}
+        - VITE_RYBBIT_SITE_ID=${VITE_RYBBIT_SITE_ID:-}
+        - VITE_RYBBIT_API_KEY=${VITE_RYBBIT_API_KEY:-}
     container_name: crackle-frontend
     ports:
       - "8080:80"  # Only nginx exposed externally

@@ -1,12 +1,15 @@
-// Umami Analytics Tracking Utilities
-// Documentation: https://umami.is/docs/track-events
+// Rybbit Analytics Tracking Utilities
+// Docs: https://www.rybbit.io/docs/track-events
 
-// Extend the Window interface to include the umami tracking function
+// Extend the Window interface to include the Rybbit tracking functions
 declare global {
   interface Window {
-    umami?: {
-      track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
-    };
+    rybbit?: {
+      // Track a custom event
+      event: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
+      // Trigger a page view (usually auto in SPAs)
+      pageview?: () => void;
+    }
   }
 }
 
@@ -19,11 +22,11 @@ export function trackEvent(
   eventName: string,
   eventData?: Record<string, string | number | boolean>
 ): void {
-  if (typeof window !== 'undefined' && window.umami) {
+  if (typeof window !== 'undefined' && window.rybbit?.event) {
     try {
-      window.umami.track(eventName, eventData);
+      window.rybbit.event(eventName, eventData);
     } catch (error) {
-      console.warn('Umami tracking error:', error);
+      console.warn('Rybbit tracking error:', error);
     }
   }
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button, Flex, Heading, Text, Card, Spinner, Callout } from "@radix-ui/themes";
+import Toast from './ReactBits/Toast';
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import gif from "../assets/ya-done-messed-up.gif";
@@ -67,6 +68,14 @@ function CrackMode({ onBack }: CrackModeProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitLoadingMessage, setSubmitLoadingMessage] = useState("");
   const [disabledLetters, setDisabledLetters] = useState<Set<string>>(new Set());
+  // Toast + anti-spam state for Reset
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'danger'>('success');
+  const [pendingToast, setPendingToast] = useState(false);
+  const [pressCount, setPressCount] = useState(0);
+  const [resetDisabled, setResetDisabled] = useState(false);
+  const [resetButtonText, setResetButtonText] = useState('Reset');
 
   // Refs for smooth scrolling
   const statsCardRef = useRef<HTMLDivElement>(null);
@@ -377,6 +386,55 @@ function CrackMode({ onBack }: CrackModeProps) {
     setDisabledLetters(new Set());
   };
 
+  const showSuccessToast = (message: string) => {
+    setToastType('success');
+    setToastMessage(message);
+    setToastOpen(true);
+  };
+
+  const showDangerToast = (message: string, disableMs = 5000) => {
+    setToastType('danger');
+    setToastMessage(message);
+    setToastOpen(true);
+    setResetDisabled(true);
+    setResetButtonText('🦎');
+    setTimeout(() => {
+      setResetDisabled(false);
+      setResetButtonText('Reset');
+      setPressCount(0);
+    }, disableMs);
+  };
+
+  const handleResetClick = (event?: React.MouseEvent) => {
+    // If a toast is currently showing, queue logic and anti-spam handling
+    if (toastOpen) {
+      const next = pressCount + 1;
+      setPressCount(next);
+      if (next === 4 && !resetDisabled) {
+        // prevent queued success after penalty
+        setPendingToast(false);
+        showDangerToast('Lizard, lizard, lizard, lizard, lizard! 🦎');
+      } else {
+        setPendingToast(true);
+      }
+      return;
+    }
+
+    // No toast showing; proceed to reset game and show success toast
+    resetGame(event);
+    showSuccessToast('Game reset!');
+    setPressCount(0);
+  };
+
+  useEffect(() => {
+    if (!toastOpen && pendingToast && !resetDisabled) {
+      setPendingToast(false);
+      resetGame();
+      showSuccessToast('Game reset!');
+      setPressCount(0);
+    }
+  }, [toastOpen, pendingToast, resetDisabled]);
+
   return (
     <div className="crack-mode">
       <div className="game-header">
@@ -387,8 +445,8 @@ function CrackMode({ onBack }: CrackModeProps) {
           Back
         </Button>
         <Heading size="6">Crack Wordle</Heading>
-        <Button variant="soft" onClick={resetGame} className="reset-button">
-          Reset
+        <Button variant="soft" onClick={handleResetClick} disabled={resetDisabled} className="reset-button">
+          {resetButtonText}
         </Button>
       </div>
 
@@ -514,6 +572,7 @@ function CrackMode({ onBack }: CrackModeProps) {
           <Card className="input-card">
             <Flex direction="column" gap="3" align="center">
               <div>
+              <Toast open={toastOpen} message={toastMessage} type={toastType} duration={3000} onClose={() => setToastOpen(false)} position="top-left" />
                 <Text size="2" weight="bold" mb="1">
                   Enter Your Guess
                 </Text>
