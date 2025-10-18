@@ -2,6 +2,7 @@
 ## [Unreleased]
 
 ### Features
+- replace Umami with Rybbit analytics integration and add toast notifications for user feedback
 - add setTargetWord console command, fix duplicate-letter key disabling, and extract ASCII banner
 - add Docker deployment with multi-stage build, security isolation and privacy-focused analytics
 
