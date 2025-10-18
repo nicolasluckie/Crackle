@@ -28,16 +28,16 @@ Practice or Crack the daily Wordle 💥
 
 ## Roadmap
 
-- [ ] 🐳 Production build & deployment using Docker
+- [x] 🐳 Production build & deployment using Docker
 - [x] 🧪 Frontend unit tests
 - [x] 🎨 Shades of Purple theme with animations
 - [x] ⚛️ React + TypeScript web UI with Vite
-- [x] 🧪 Backend unit tests
-- [x] 🚀 Initial CLI release with core features
+- [x] 🧪 Backend unit tests using unittest + pytest
+- [x] 🚀 Initial Python script with core functionality
 
 ## How It Works
 
-A list of 14,855 valid 5-letter Wordle answers is loaded from `wordle_answers.txt`. Obtained from [dracos/valid-wordle-words.txt](https://gist.github.com/dracos/dd0668f281e685bad51479e5acaadb93).
+A list of 14,801 valid 5-letter Wordle answers is loaded from `wordle_answers.txt`. Obtained from [dracos/valid-wordle-words.txt](https://gist.github.com/dracos/dd0668f281e685bad51479e5acaadb93).
 
 You can then enter a guess and the corresponding results (g/y/b) to filter down the possible answers.
 
@@ -53,11 +53,18 @@ Next-word suggestions are ranked by positional and global letter frequency and u
 
 ### Prerequisites
 
+**Development:**
 - Node.js 18+ and npm
 - Python 3.7+
 - Flask and flask-cors (`pip install flask flask-cors`)
 
+**Production (Docker):**
+- Docker (v20.10+)
+- Docker Compose (v2.0+)
+
 ### Installation
+
+#### Development Setup
 
 1. Install frontend dependencies:
 ```bash
@@ -70,11 +77,44 @@ npm install
 pip install flask flask-cors
 ```
 
+3. (Optional) Configure analytics in `web/.env.local`:
+```bash
+# Leave empty to disable analytics during development
+VITE_RYBBIT_SCRIPT_URL=
+VITE_RYBBIT_SITE_ID=
+# For localhost tracking only (do not set in production builds)
+# VITE_RYBBIT_API_KEY=rb_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+#### Production Setup (Docker)
+
+1. Navigate to the docker directory:
+```bash
+cd docker
+```
+
+2. Configure environment (copy and edit `.env.production` to `.env`):
+```bash
+cp .env.production .env
+# Edit .env to configure CORS and analytics (optional)
+```
+
+3. Build and start the application:
+```bash
+docker-compose up -d
+```
+
+4. Access the application at `http://localhost:8080`
+
+See [`docker/README.md`](./docker/README.md) for detailed Docker deployment instructions.
+
 ### Running the Application
+
+#### Development Mode
 
 You need to run both the Flask API backend and the React frontend.
 
-#### Quick Start (Single Command)
+**Quick Start (Single Command)**
 
 From the `web` directory:
 
@@ -87,7 +127,7 @@ This will start both the Flask API backend and React frontend concurrently.
 - **API**: `http://localhost:5000`
 - **Web Interface**: `http://localhost:5173`
 
-#### Manual Start (Separate Terminals)
+**Manual Start (Separate Terminals)**
 
 Alternatively, you can run them separately:
 
@@ -234,7 +274,7 @@ Additional testing examples, best practices, and debugging tips are available in
 crackle/
 ├── crackle.py                   # Python CLI implementation
 ├── api.py                       # Flask API backend
-├── wordle_answers.txt           # 14,855 valid 5-letter words
+├── wordle_answers.txt           # 14,801 valid 5-letter words
 ├── tests/                       # Python tests
 │   └── test_crackle.py
 ├── web/                         # React web interface
@@ -280,3 +320,11 @@ The Flask backend (`api.py`) provides:
 ## License
 
 Crackle is open-sourced software licensed under the [MIT license](./LICENSE).
+
+## Privacy & Analytics
+
+Crackle uses optional Rybbit Analytics for anonymous usage tracking (no cookies, GDPR-friendly). Analytics can be disabled via environment configuration. See [PRIVACY.md](./PRIVACY.md) for details.
+
+---
+
+> **Disclaimer:** _Crackle is not affiliated with, endorsed by, or connected to Wordle, The New York Times, or any official Wordle entities. This is an independent passion project created for educational and entertainment purposes._

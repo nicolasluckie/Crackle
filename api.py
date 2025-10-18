@@ -1,17 +1,38 @@
 """Flask API backend for Crackle web interface."""
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import random
+import os
 from crackle import load_words, filter_words, rank_words, compute_feedback
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for React frontend
+app = Flask(__name__, static_folder="web/dist", static_url_path="")
+
+# Configure CORS for production
+# In production (Docker), frontend and backend are same-origin via nginx proxy
+# CORS is only needed for local development when frontend (5173) calls backend (5000)
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:8080"
+).split(",")
+
+# If ALLOWED_ORIGINS is empty or just whitespace, disable CORS (same-origin setup)
+if ALLOWED_ORIGINS and any(origin.strip() for origin in ALLOWED_ORIGINS):
+    CORS(
+        app,
+        origins=[origin.strip() for origin in ALLOWED_ORIGINS if origin.strip()],
+        supports_credentials=True,
+    )
+else:
+    # In production with nginx proxy, requests are same-origin, no CORS needed
+    CORS(app)
 
 # Load word list once at startup
 WORD_LIST = load_words()
 
-# Store active games in memory (in production, use a proper database)
+# Store active games in memory
+# NOTE: This is in-memory storage and NOT shared between Gunicorn workers
+# For multi-worker deployment, use Redis or a database instead
+# Current deployment uses 1 worker with threads to allow memory sharing
 games = {}
 
 
@@ -118,6 +139,16 @@ def make_guess():
 def health():
     """Health check endpoint."""
     return jsonify({"status": "ok", "words_loaded": len(WORD_LIST)})
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_frontend(path):
+    """Serve the React frontend in production mode."""
+    if path and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, "index.html")
 
 
 if __name__ == "__main__":

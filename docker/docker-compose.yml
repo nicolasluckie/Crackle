@@ -1,0 +1,57 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: backend
+    container_name: crackle-backend
+    # No external ports exposed - backend is internal only
+    expose:
+      - "5000"
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - crackle-internal
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: frontend
+      args:
+        - VITE_RYBBIT_SCRIPT_URL=${VITE_RYBBIT_SCRIPT_URL:-}
+        - VITE_RYBBIT_SITE_ID=${VITE_RYBBIT_SITE_ID:-}
+        - VITE_RYBBIT_API_KEY=${VITE_RYBBIT_API_KEY:-}
+    container_name: crackle-frontend
+    ports:
+      - "8080:80"  # Only nginx exposed externally
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      crackle-internal:
+      cloudflare_network:
+        aliases:
+          - crackle
+
+networks:
+  crackle-internal:
+    driver: bridge
+    internal: false  # Allows outbound but backend not directly accessible from host
+  cloudflare_network:
+    external: true  # External network for cloudflared tunnel connection

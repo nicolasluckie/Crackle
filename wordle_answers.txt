@@ -719,7 +719,6 @@ assai
 assam
 assay
 assed
-asses
 asset
 assez
 assot
@@ -931,7 +930,6 @@ bales
 balks
 balky
 ballo
-balls
 bally
 balms
 balmy
@@ -1305,7 +1303,6 @@ bises
 bisks
 bisom
 bison
-bitch
 biter
 bites
 bitey
@@ -1487,7 +1484,6 @@ bomor
 bonce
 bonds
 boned
-boner
 bones
 boney
 bongo
@@ -1502,7 +1498,6 @@ bonza
 bonze
 booai
 booay
-boobs
 booby
 boody
 booed
@@ -1842,7 +1837,6 @@ busky
 bussu
 busti
 busts
-busty
 butch
 buteo
 butes
@@ -2184,7 +2178,6 @@ chimp
 china
 chine
 ching
-chink
 chino
 chins
 chips
@@ -2206,7 +2199,6 @@ chizz
 chock
 choco
 chocs
-chode
 chogs
 choil
 choir
@@ -2345,7 +2337,6 @@ clint
 clipe
 clips
 clipt
-clits
 cloak
 cloam
 clock
@@ -2407,7 +2398,6 @@ cobza
 cocas
 cocci
 cocco
-cocks
 cocky
 cocoa
 cocos
@@ -2513,7 +2503,6 @@ cooly
 coomb
 cooms
 coomy
-coons
 coops
 coopt
 coost
@@ -2769,7 +2758,6 @@ cundy
 cunei
 cunit
 cunny
-cunts
 cupel
 cupid
 cuppa
@@ -3142,7 +3130,6 @@ diked
 diker
 dikes
 dikey
-dildo
 dilli
 dills
 dilly
@@ -3160,7 +3147,6 @@ dingo
 dings
 dingy
 dinic
-dinks
 dinky
 dinlo
 dinna
@@ -3930,7 +3916,6 @@ faffs
 faffy
 faggy
 fagin
-fagot
 faiks
 fails
 faine
@@ -3961,7 +3946,6 @@ fanga
 fango
 fangs
 fanks
-fanny
 fanon
 fanos
 fanum
@@ -4026,7 +4010,6 @@ fease
 feast
 feats
 feaze
-fecal
 feces
 fecht
 fecit
@@ -4045,7 +4028,6 @@ fehme
 feign
 feint
 feist
-felch
 felid
 felix
 fella
@@ -4474,7 +4456,6 @@ fryer
 fubar
 fubby
 fubsy
-fucks
 fucus
 fuddy
 fudge
@@ -5101,7 +5082,6 @@ groms
 grone
 groof
 groom
-grope
 gross
 grosz
 grots
@@ -5147,7 +5127,6 @@ guffs
 gugas
 guggl
 guide
-guido
 guids
 guild
 guile
@@ -5605,7 +5584,6 @@ honey
 hongi
 hongs
 honks
-honky
 honor
 hooch
 hoods
@@ -5639,7 +5617,6 @@ horis
 horks
 horme
 horns
-horny
 horse
 horst
 horsy
@@ -6397,7 +6374,6 @@ kings
 kingy
 kinin
 kinks
-kinky
 kinos
 kiore
 kiosk
@@ -6605,7 +6581,6 @@ laarf
 laari
 labda
 label
-labia
 labis
 labne
 labor
@@ -6839,7 +6814,6 @@ lepta
 lered
 leres
 lerps
-lesbo
 leses
 lesos
 lests
@@ -7719,7 +7693,6 @@ minds
 mined
 miner
 mines
-minge
 mingi
 mings
 mingy
@@ -8143,7 +8116,6 @@ mutch
 muted
 muter
 mutes
-mutha
 mutic
 mutis
 muton
@@ -8323,7 +8295,6 @@ neese
 neeze
 nefie
 negri
-negro
 negus
 neifs
 neigh
@@ -8421,7 +8392,6 @@ niffy
 nifle
 nifty
 niger
-nigga
 nighs
 night
 nigre
@@ -9099,7 +9069,6 @@ panny
 pansy
 panto
 pants
-panty
 paoli
 paolo
 papad
@@ -9302,7 +9271,6 @@ pened
 penes
 pengo
 penie
-penis
 penks
 penna
 penne
@@ -9527,7 +9495,6 @@ pirre
 pirri
 pirrs
 pisco
-pises
 pisky
 pisos
 pissy
@@ -9777,7 +9744,6 @@ porgy
 porin
 porks
 porky
-porno
 porns
 porny
 porta
@@ -9891,7 +9857,6 @@ preys
 prial
 prian
 price
-prick
 pricy
 pride
 pridy
@@ -9983,7 +9948,6 @@ ptish
 ptype
 pubby
 pubco
-pubes
 pubic
 pubis
 pubsy
@@ -10086,7 +10050,6 @@ purty
 puses
 pushy
 pusle
-pussy
 putas
 puter
 putid
@@ -11386,7 +11349,6 @@ sells
 selva
 semas
 semee
-semen
 semes
 semie
 semis
@@ -11552,8 +11514,6 @@ shirt
 shish
 shiso
 shist
-shite
-shits
 shiur
 shiva
 shive
@@ -11730,7 +11690,6 @@ sizes
 skags
 skail
 skald
-skank
 skarn
 skart
 skate
@@ -11745,7 +11704,6 @@ skeef
 skeen
 skeer
 skees
-skeet
 skeev
 skeez
 skegg
@@ -11895,7 +11853,6 @@ slurp
 slurs
 sluse
 slush
-sluts
 slyer
 slyly
 slype
@@ -12220,7 +12177,6 @@ spewy
 spial
 spica
 spice
-spick
 spics
 spicy
 spide
@@ -12293,7 +12249,6 @@ spugs
 spule
 spume
 spumy
-spunk
 spurn
 spurs
 spurt
@@ -12510,7 +12465,6 @@ subby
 suber
 subha
 succi
-sucks
 sucky
 sucre
 sudan
@@ -12902,7 +12856,6 @@ teens
 teeny
 teers
 teeth
-teets
 teffs
 teggs
 tegua
@@ -13154,7 +13107,6 @@ titir
 titis
 title
 titre
-titty
 titup
 tiyin
 tiyns
@@ -13501,7 +13453,6 @@ turnt
 turon
 turps
 turrs
-tushy
 tusks
 tusky
 tutee
@@ -13534,7 +13485,6 @@ twigs
 twill
 twilt
 twine
-twink
 twins
 twiny
 twire
@@ -14070,7 +14020,6 @@ vughs
 vughy
 vulgo
 vulns
-vulva
 vutty
 vygie
 vying
@@ -14138,7 +14087,6 @@ wanes
 waney
 wangs
 wanks
-wanky
 wanle
 wanly
 wanna
@@ -14313,7 +14261,6 @@ whoof
 whoop
 whoot
 whops
-whore
 whorl
 whort
 whose
@@ -14352,7 +14299,6 @@ wilga
 wilis
 wilja
 wills
-willy
 wilts
 wimps
 wimpy

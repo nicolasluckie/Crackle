@@ -152,7 +152,7 @@ describe('CrackMode', () => {
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:5000/api/filter',
+        '/api/filter',
         expect.objectContaining({
           guess: 'crane',
           result: 'ggggg',
@@ -347,5 +347,146 @@ describe('CrackMode', () => {
     await userEvent.click(backButton);
 
     expect(mockOnBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables letters marked as black after submitting guess', async () => {
+    mockedAxios.post.mockResolvedValue({
+      data: {
+        filtered: ['stale', 'steal'],
+        ranked: ['stale', 'steal'],
+        count: 2,
+      },
+    });
+
+    render(<CrackMode onBack={mockOnBack} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Crack Wordle')).toBeInTheDocument();
+    });
+
+    // Type guess "CRANE" and mark C, N, E as black (b), R as green (g), A as yellow (y)
+    await userEvent.keyboard('CRANE');
+    await userEvent.keyboard('BGYBB'); // C=black, R=green, A=yellow, N=black, E=black
+
+    const submitButton = screen.getByRole('button', { name: /submit guess/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    // Wait for all disabled letters (C, N, E) to be set
+    await waitFor(() => {
+      const cButton = screen.getByRole('button', { name: 'C' });
+      const nButton = screen.getByRole('button', { name: 'N' });
+      const eButton = screen.getByRole('button', { name: 'E' });
+      expect(cButton).toBeDisabled();
+      expect(nButton).toBeDisabled();
+      expect(eButton).toBeDisabled();
+    });
+
+    // Check that C, N, E buttons are disabled and R, A are not
+    const cButton = screen.getByRole('button', { name: 'C' });
+    const rButton = screen.getByRole('button', { name: 'R' });
+    const aButton = screen.getByRole('button', { name: 'A' });
+    const nButton = screen.getByRole('button', { name: 'N' });
+    const eButton = screen.getByRole('button', { name: 'E' });
+
+    expect(cButton).toBeDisabled();
+    expect(nButton).toBeDisabled();
+    expect(eButton).toBeDisabled();
+    expect(rButton).not.toBeDisabled(); // R was green
+    expect(aButton).not.toBeDisabled(); // A was yellow
+  });
+
+  it('prevents typing disabled letters with physical keyboard', async () => {
+    mockedAxios.post.mockResolvedValue({
+      data: {
+        filtered: ['stale', 'steam', 'staff'],
+        ranked: ['stale', 'steam', 'staff'],
+        count: 3,
+      },
+    });
+
+    render(<CrackMode onBack={mockOnBack} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Crack Wordle')).toBeInTheDocument();
+    });
+
+    // First guess: CRANE with C, R, N, E marked as black, A as yellow
+    await userEvent.keyboard('CRANE');
+    await userEvent.keyboard('BBYBB'); // C=black, R=black, A=yellow, N=black, E=black
+
+    const submitButton = screen.getByRole('button', { name: /submit guess/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    // Wait for disabled letters (C, R, N, E) to be set
+    await waitFor(() => {
+      const cButton = screen.getByRole('button', { name: 'C' });
+      const rButton = screen.getByRole('button', { name: 'R' });
+      const nButton = screen.getByRole('button', { name: 'N' });
+      const eButton = screen.getByRole('button', { name: 'E' });
+      expect(cButton).toBeDisabled();
+      expect(rButton).toBeDisabled();
+      expect(nButton).toBeDisabled();
+      expect(eButton).toBeDisabled();
+    });
+
+    // Try to type C, R, A, N, E -> only A should work (others are disabled)
+    await userEvent.keyboard('CRANE');
+
+    // Should only have 'A' typed (C, R, N, E are all blocked)
+    await waitFor(() => {
+      const letterBox0 = screen.getByTestId('letter-box-0');
+      expect(letterBox0).toHaveTextContent('A');
+    });
+  });
+
+  it('resets disabled letters when reset button is clicked', async () => {
+    mockedAxios.post.mockResolvedValue({
+      data: {
+        filtered: ['stale'],
+        ranked: ['stale'],
+        count: 1,
+      },
+    });
+
+    render(<CrackMode onBack={mockOnBack} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Crack Wordle')).toBeInTheDocument();
+    });
+
+    // Submit a guess with black letters
+    await userEvent.keyboard('CRANE');
+    await userEvent.keyboard('BBBBB');
+
+    const submitButton = screen.getByRole('button', { name: /submit guess/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    // Verify letters are disabled
+    const cButton = screen.getByRole('button', { name: 'C' });
+    expect(cButton).toBeDisabled();
+
+    // Click reset
+    const resetButton = screen.getByRole('button', { name: /reset/i });
+    await userEvent.click(resetButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/guesses made: 0/i)).toBeInTheDocument();
+    });
+
+    // Verify C button is now enabled again
+    const cButtonAfterReset = screen.getByRole('button', { name: 'C' });
+    expect(cButtonAfterReset).not.toBeDisabled();
   });
 });

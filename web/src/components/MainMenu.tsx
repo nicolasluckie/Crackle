@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
-import { Box, Card, Flex, Heading, Text, Spinner } from "@radix-ui/themes";
+import { Box, Card, Flex, Text, Spinner } from "@radix-ui/themes";
 import axios from 'axios';
 import { getCachedWordList, cacheWordList } from '../utils/wordListCache';
+import { trackPageView, trackModeSelection } from '../utils/analytics';
 import "./MainMenu.css";
 import LetterGlitch from "./ReactBits/LetterGlitch";
 import DecryptedText from "./ReactBits/DecryptedText";
+import AsciiBanner from "./AsciiBanner";
 
 
 interface MainMenuProps {
   onSelectMode: (mode: "practice" | "crack") => void;
 }
 
-const API_URL = 'http://localhost:5000';
+// Use environment variable for API URL
+// In development: http://localhost:5000
+// In production (Docker): empty string = relative URLs through nginx proxy
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 const LOADING_MESSAGES = [
   'Loading word list...',
@@ -35,6 +40,11 @@ function MainMenu({ onSelectMode }: MainMenuProps) {
   const [isLoadingCrack, setIsLoadingCrack] = useState(false);
   const [isLoadingPractice, setIsLoadingPractice] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
+
+  useEffect(() => {
+    // Track page view when component mounts
+    trackPageView('main-menu');
+  }, []);
 
   useEffect(() => {
     if (isLoadingCrack || isLoadingPractice) {
@@ -65,6 +75,7 @@ function MainMenu({ onSelectMode }: MainMenuProps) {
   };
 
   const handleCrackModeClick = async () => {
+    trackModeSelection('crack');
     setIsLoadingCrack(true);
     try {
       await loadWordList();
@@ -79,6 +90,7 @@ function MainMenu({ onSelectMode }: MainMenuProps) {
   };
 
   const handlePracticeModeClick = async () => {
+    trackModeSelection('practice');
     setIsLoadingPractice(true);
     try {
       // Just transition - PracticeMode will handle game initialization
@@ -106,14 +118,7 @@ function MainMenu({ onSelectMode }: MainMenuProps) {
         />
       </div>
       <div className="banner">
-        <pre>
-{` ██████╗██████╗  █████╗  ██████╗██╗  ██╗██╗     ███████╗
-██╔════╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██║     ██╔════╝
-██║     ██████╔╝███████║██║     █████╔╝ ██║     █████╗
-██║     ██╔══██╗██╔══██║██║     ██╔═██╗ ██║     ██╔══╝
-╚██████╗██║  ██║██║  ██║╚██████╗██║  ██╗███████╗███████╗
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝`}
-        </pre>
+        <AsciiBanner />
       </div>
 
       <Flex direction="column" gap="4" align="center" className="menu-content">
