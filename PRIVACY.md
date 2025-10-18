@@ -1,34 +1,34 @@
 # Privacy Policy
 
-**Last Updated:** October 15, 2025
+**Last Updated:** October 18, 2025
 
 This privacy policy applies to the Crackle web application, created by Nicolas Luckie as an open-source service. This service is provided "AS IS" for helping users practice and solve Wordle puzzles.
 
 ## What Information We Collect
 
-Crackle uses Umami Analytics, a privacy-focused analytics platform, to understand how users interact with the application. The following anonymous information is collected:
+Crackle uses Rybbit Analytics, a privacy-focused, cookieless analytics platform, to understand how users interact with the application. We configure analytics to be anonymous and minimal. The following information may be collected:
 
-### Usage Analytics
-- **Page views**: 📄 Which screens you visit (main menu, practice mode, crack mode)
-- **Game interactions**: 🎮
+### Usage Analytics (anonymous)
+- Page views for key screens: 📄 main menu, practice mode, crack mode (tracked manually — not every page by default)
+- Game interactions: 🎮
     - ⚙️ Mode selections (practice or crack)
     - 🎯 Guess submissions and guess counts
     - 🏆 Game completions and wins
     - 🔘 Button clicks (back, reset, new game)
-- **Technical data**: 🖥️ Your browser type and operating system
-- **Location data**: 🌍 Your country (anonymized, no city or precise location)
+- Technical data: 🖥️ Aggregated browser type and operating system
+- Location data: 🌍 Country-level only (no city or precise location)
 
 ### What We Do NOT Collect
 - ❌ No personal information (name, email, phone number, etc.)
-- ❌ No precise location data (only country-level, anonymized)
-- ❌ No cookies for tracking
-- ❌ No IP addresses (not stored)
-- ❌ No keyboard input beyond basic interaction events
+- ❌ No precise location data (only country-level)
+- ❌ No cookies for tracking (Rybbit is configured cookieless)
+- ❌ No individual keystrokes (letters, backspace) or typed content
+- ❌ No user profiles, session replays, or cross-session identifiers
 - ❌ No personally identifiable information of any kind
 
 ## How We Use This Information
 
-The anonymous usage data helps us:
+Anonymous usage data helps us:
 - Understand which features are most popular
 - Improve the user experience
 - Identify and fix technical issues
@@ -36,28 +36,34 @@ The anonymous usage data helps us:
 
 ## Third-Party Services
 
-**Umami Analytics** (https://umami.is) is used for anonymous analytics. Umami is:
-- GDPR & CCPA compliant
-- Cookie-free
+**Rybbit Analytics (Self-Hosted)** is used for anonymous, cookieless analytics. We self-host Rybbit on our own servers and do not send analytics data to Rybbit Cloud (rybbit.io). Rybbit is:
+- GDPR & CCPA friendly
+- Cookie-free by design
 - Privacy-focused
 - Open-source
 
-All data sent to Umami is aggregated and anonymized. No personal information is transmitted.
+Our configuration only uses basic web analytics and custom events relevant to gameplay and app navigation. We do not enable advanced features like session replay, user profiles, or any feature intended to identify individual users.
+
+All events we store are aggregated and do not contain personal information. For general information about the Rybbit software, see: https://www.rybbit.io/docs and their privacy page: https://www.rybbit.io/privacy (note: those pages describe the platform; our deployment is self-hosted and data remains on infrastructure we control).
+
+**Traffic Proxying (Cloudflare).** All application traffic and analytics events are proxied through Cloudflare to our servers. Cloudflare may process standard request metadata as part of providing network and security services. Crackle does not access or store IP addresses within the application logic. For details on Cloudflare’s data handling, see Cloudflare’s privacy policy.
 
 **Note:** Analytics can be disabled by the site administrator by not configuring the analytics environment variables during deployment.
 
 ## Data Retention
 
-Anonymous analytics data is retained by Umami according to their standard retention policies. Since no personal information is collected, there is no user-specific data to delete.
+Analytics data retention is determined by our self-hosted Rybbit deployment and is controlled by the site operator. We do not send analytics data to Rybbit Cloud.
+
+Crackle itself does not collect or store personal information, so there is no user-specific data to delete from Crackle. Questions about analytics retention and deletion for our self-hosted instance can be directed to the contact below.
 
 ## Your Choices
 
-- **Stop data collection**: Simply close the application or use an ad blocker to block analytics scripts
+- **Stop data collection**: Use an ad/script blocker to block analytics, or do not use the application
 - **No account required**: Crackle requires no registration, login, or personal information
 
 ## Security
 
-We implement industry-standard security practices to protect the application. Since no personal data is collected, there is no personal information at risk.
+We implement industry-standard security practices to protect the application. Since no personal data is collected by Crackle, there is no personal information at risk within the application.
 
 ## Children's Privacy
 
