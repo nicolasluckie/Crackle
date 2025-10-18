@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Flex, Heading, Text, Card, Spinner, Callout } from "@radix-ui/themes";
-import Toast from './ReactBits/Toast';
+import {
+  Button,
+  Flex,
+  Heading,
+  Text,
+  Card,
+  Spinner,
+  Callout,
+} from "@radix-ui/themes";
+import Toast from "./ReactBits/Toast";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import gif from "../assets/ya-done-messed-up.gif";
@@ -67,15 +75,17 @@ function CrackMode({ onBack }: CrackModeProps) {
   const [successWord, setSuccessWord] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitLoadingMessage, setSubmitLoadingMessage] = useState("");
-  const [disabledLetters, setDisabledLetters] = useState<Set<string>>(new Set());
+  const [disabledLetters, setDisabledLetters] = useState<Set<string>>(
+    new Set()
+  );
   // Toast + anti-spam state for Reset
   const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'danger'>('success');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "danger">("success");
   const [pendingToast, setPendingToast] = useState(false);
   const [pressCount, setPressCount] = useState(0);
   const [resetDisabled, setResetDisabled] = useState(false);
-  const [resetButtonText, setResetButtonText] = useState('Reset');
+  const [resetButtonText, setResetButtonText] = useState("Reset");
 
   // Refs for smooth scrolling
   const statsCardRef = useRef<HTMLDivElement>(null);
@@ -95,7 +105,7 @@ function CrackMode({ onBack }: CrackModeProps) {
 
       // Handle Enter key
       if (key === "ENTER") {
-        handleSubmitGuess('enter');
+        handleSubmitGuess("enter");
         return;
       }
 
@@ -119,7 +129,11 @@ function CrackMode({ onBack }: CrackModeProps) {
         }
       }
       // Otherwise, handle letter input for guess (check if letter is not disabled)
-      else if (currentGuess.length < 5 && /^[A-Z]$/.test(key) && !disabledLetters.has(key)) {
+      else if (
+        currentGuess.length < 5 &&
+        /^[A-Z]$/.test(key) &&
+        !disabledLetters.has(key)
+      ) {
         setCurrentGuess(currentGuess + key);
       }
     };
@@ -134,8 +148,8 @@ function CrackMode({ onBack }: CrackModeProps) {
   const scrollToElement = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (ref.current) {
       ref.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
+        behavior: "smooth",
+        block: "center",
       });
     }
   };
@@ -180,7 +194,7 @@ function CrackMode({ onBack }: CrackModeProps) {
     }
   };
 
-  const handleSubmitGuess = async (method: 'click' | 'enter' = 'click') => {
+  const handleSubmitGuess = async (method: "click" | "enter" = "click") => {
     if (currentGuess.length !== 5) {
       setError("Guess must be exactly 5 letters");
       return;
@@ -237,8 +251,8 @@ function CrackMode({ onBack }: CrackModeProps) {
       // Update disabled letters based on result (b = black/absent)
       // Only disable a letter if ALL instances of it are black (no green or yellow)
       const newDisabledLetters = new Set(disabledLetters);
-      const guessLetters = currentGuess.toUpperCase().split('');
-      const resultChars = currentResult.toLowerCase().split('');
+      const guessLetters = currentGuess.toUpperCase().split("");
+      const resultChars = currentResult.toLowerCase().split("");
 
       // Group indices by letter
       const letterIndices = new Map<string, number[]>();
@@ -251,7 +265,7 @@ function CrackMode({ onBack }: CrackModeProps) {
 
       // Only disable if all instances of a letter are black
       letterIndices.forEach((indices, letter) => {
-        const allBlack = indices.every(index => resultChars[index] === 'b');
+        const allBlack = indices.every((index) => resultChars[index] === "b");
         if (allBlack) {
           newDisabledLetters.add(letter);
         }
@@ -280,10 +294,14 @@ function CrackMode({ onBack }: CrackModeProps) {
 
   const handleGuessKeyPress = (key: string) => {
     if (key === "ENTER") {
-      handleSubmitGuess('click');
+      handleSubmitGuess("click");
     } else if (key === "BACKSPACE") {
       setCurrentGuess(currentGuess.slice(0, -1));
-    } else if (currentGuess.length < 5 && /^[A-Z]$/.test(key) && !disabledLetters.has(key)) {
+    } else if (
+      currentGuess.length < 5 &&
+      /^[A-Z]$/.test(key) &&
+      !disabledLetters.has(key)
+    ) {
       setCurrentGuess(currentGuess + key);
     }
   };
@@ -294,7 +312,9 @@ function CrackMode({ onBack }: CrackModeProps) {
     } else if (key === "BACKSPACE") {
       setCurrentResult(currentResult.slice(0, -1));
     }
-  };  const renderGuessHistoryRow = (item: GuessHistory, index: number) => {
+  };
+
+  const renderGuessHistoryRow = (item: GuessHistory, index: number) => {
     const letters = item.guess.split("");
     const results = item.result.split("");
 
@@ -369,7 +389,7 @@ function CrackMode({ onBack }: CrackModeProps) {
   const resultKeyboard = [["G", "Y", "B", "BACKSPACE"]];
 
   const resetGame = (event?: React.MouseEvent) => {
-    trackReset('crack');
+    trackReset("crack");
 
     // If Shift key is held, also clear the cache
     if (event?.shiftKey) {
@@ -387,20 +407,20 @@ function CrackMode({ onBack }: CrackModeProps) {
   };
 
   const showSuccessToast = (message: string) => {
-    setToastType('success');
+    setToastType("success");
     setToastMessage(message);
     setToastOpen(true);
   };
 
   const showDangerToast = (message: string, disableMs = 5000) => {
-    setToastType('danger');
+    setToastType("danger");
     setToastMessage(message);
     setToastOpen(true);
     setResetDisabled(true);
-    setResetButtonText('🦎');
+    setResetButtonText("🦎");
     setTimeout(() => {
       setResetDisabled(false);
-      setResetButtonText('Reset');
+      setResetButtonText("Reset");
       setPressCount(0);
     }, disableMs);
   };
@@ -413,7 +433,7 @@ function CrackMode({ onBack }: CrackModeProps) {
       if (next === 4 && !resetDisabled) {
         // prevent queued success after penalty
         setPendingToast(false);
-        showDangerToast('Lizard, lizard, lizard, lizard, lizard! 🦎');
+        showDangerToast("Lizard, lizard, lizard, lizard, lizard! 🦎");
       } else {
         setPendingToast(true);
       }
@@ -422,7 +442,7 @@ function CrackMode({ onBack }: CrackModeProps) {
 
     // No toast showing; proceed to reset game and show success toast
     resetGame(event);
-    showSuccessToast('Game reset!');
+    showSuccessToast("Game reset!");
     setPressCount(0);
   };
 
@@ -430,7 +450,7 @@ function CrackMode({ onBack }: CrackModeProps) {
     if (!toastOpen && pendingToast && !resetDisabled) {
       setPendingToast(false);
       resetGame();
-      showSuccessToast('Game reset!');
+      showSuccessToast("Game reset!");
       setPressCount(0);
     }
   }, [toastOpen, pendingToast, resetDisabled]);
@@ -438,28 +458,35 @@ function CrackMode({ onBack }: CrackModeProps) {
   return (
     <div className="crack-mode">
       <div className="game-header">
-        <Button variant="soft" onClick={() => {
-          trackBackButton('crack');
-          onBack();
-        }} className="back-button">
+        <Button
+          variant="soft"
+          onClick={() => {
+            trackBackButton("crack");
+            onBack();
+          }}
+          className="back-button"
+        >
           Back
         </Button>
         <Heading size="6">Crack Wordle</Heading>
-        <Button variant="soft" onClick={handleResetClick} disabled={resetDisabled} className="reset-button">
+        <Button
+          variant="soft"
+          onClick={handleResetClick}
+          disabled={resetDisabled}
+          className="reset-button"
+        >
           {resetButtonText}
         </Button>
       </div>
 
       {error && error.includes("API") && (
         <>
-          <div style={{marginBottom: '1.25rem'}}>
+          <div style={{ marginBottom: "1.25rem" }}>
             <Callout.Root color="red" className="error-callout">
               <Callout.Icon>
                 <InfoCircledIcon />
               </Callout.Icon>
-              <Callout.Text>
-                {error}
-              </Callout.Text>
+              <Callout.Text>{error}</Callout.Text>
             </Callout.Root>
           </div>
         </>
@@ -572,7 +599,14 @@ function CrackMode({ onBack }: CrackModeProps) {
           <Card className="input-card">
             <Flex direction="column" gap="3" align="center">
               <div>
-              <Toast open={toastOpen} message={toastMessage} type={toastType} duration={3000} onClose={() => setToastOpen(false)} position="top-left" />
+                <Toast
+                  open={toastOpen}
+                  message={toastMessage}
+                  type={toastType}
+                  duration={3000}
+                  onClose={() => setToastOpen(false)}
+                  position="top-left"
+                />
                 <Text size="2" weight="bold" mb="1">
                   Enter Your Guess
                 </Text>
@@ -594,9 +628,7 @@ function CrackMode({ onBack }: CrackModeProps) {
                 <Callout.Icon>
                   <InfoCircledIcon />
                 </Callout.Icon>
-                <Callout.Text>
-                  {error}
-                </Callout.Text>
+                <Callout.Text>{error}</Callout.Text>
               </Callout.Root>
             </>
           ) : (
@@ -692,7 +724,7 @@ function CrackMode({ onBack }: CrackModeProps) {
             <div ref={submitButtonRef}>
               <Button
                 size="3"
-                onClick={() => handleSubmitGuess('click')}
+                onClick={() => handleSubmitGuess("click")}
                 className="submit-button"
                 disabled={
                   currentGuess.length !== 5 ||
